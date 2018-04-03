@@ -1,4 +1,4 @@
-# PISCINE
+﻿# PISCINE
 
 
 ### Implementation du git flow
@@ -8,6 +8,7 @@
 * Dernière version viable sujette à des bugs : Releases
 * Bugs dans la Release : hotfixes
 * Dernière version non beugué : Master
+* C'est jb
 
 
 
