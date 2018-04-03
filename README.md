@@ -1,7 +1,7 @@
-#PISCINE
+# PISCINE
 
 
-###Implementation du git flow
+### Implementation du git flow
 
 * code courant : Branche Features
 * version en développement : Develop
