@@ -308,7 +308,7 @@ class Graph
 
         // Méthode de construction des vertex et edges depuis le chargement de fichier 
         void remplissage_vertex(const std::string& nom_fichier);
-        void remplissage_vertex(const std::string& nom_fichier);
+        void remplissage_edge(const std::string& nom_fichier);
 
         /// La méthode update à appeler dans la boucle de jeu pour les graphes avec interface
         void update();
