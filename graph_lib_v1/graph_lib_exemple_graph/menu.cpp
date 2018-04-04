@@ -29,7 +29,6 @@ void menu(Graph G)
 {
     BITMAP * buffer;
 
-    //int testDeChargment;
     int page_actuelle =1;
     int etat = 0;
 
@@ -54,36 +53,6 @@ void menu(Graph G)
     menu_page2[2]=load_bitmap("Menu Decors/page2-2.bmp",NULL);
     menu_page2[3]=load_bitmap("Menu Decors/page2-3.bmp",NULL);
 
-    /*-------------------------------------------*/
-    //test de chargement buffer et fond
-   /* if((fond == NULL) || (buffer == NULL))
-    {
-        allegro_message("erreur d'allocation buffer/fond");
-        allegro_exit();
-        exit(1);
-    }
-    //test de chargement images menu
-    for (testDeChargment = 0 ; testDeChargment < 3 ; testDeChargment++)
-    {
-        if(menu_page1[testDeChargment] == NULL)
-        {
-            allegro_message("erreur d'allocation menu page 1");
-            allegro_exit();
-            exit(1);
-        }
-    }
-
-    for (testDeChargment = 0 ; testDeChargment < 4 ; testDeChargment++)
-    {
-        if(menu_page2[testDeChargment] == NULL)
-        {
-            allegro_message("erreur d'allocation menu page 1");
-            allegro_exit();
-            exit(1);
-        }
-    }
-
-    /*-------------------------------------------*/
 
     while(!key[KEY_P])
     {
