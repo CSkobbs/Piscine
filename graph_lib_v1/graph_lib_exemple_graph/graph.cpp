@@ -191,7 +191,7 @@ void Graph::make_example()
 }
 
 // Sous programme de construction des graphes
-void make_graphe(const std::string& vertex, const std::string& edge)
+void Graph::make_graphe(const std::string& vertex, const std::string& edge)
 {
     m_interface = std::make_shared<GraphInterface>(50, 0, 750, 600);
     remplissage_vertex(vertex);
