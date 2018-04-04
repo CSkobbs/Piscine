@@ -1,6 +1,6 @@
 #include "grman/grman.h"
 #include <iostream>
-
+#include "menu.h"
 #include "graph.h"
 
 int main()
@@ -21,7 +21,8 @@ int main()
     while ( !key[KEY_ESC] )
     {
         /// Il faut appeler les méthodes d'update des objets qui comportent des widgets
-        g.update();
+        menu(g);
+        //g.update();
 
         /// Mise à jour générale (clavier/souris/buffer etc...)
         grman::mettre_a_jour();
