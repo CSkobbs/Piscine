@@ -1,4 +1,5 @@
 #include "graph.h"
+#include <fstream>
 
 /***************************************************
                     VERTEX
@@ -173,6 +174,8 @@ void Graph::make_example()
     add_interfaced_vertex(6,  0.0, 300, 500, "bad_clowns_xx3xx.jpg", 1);
     add_interfaced_vertex(7,  0.0, 500, 500, "bad_clowns_xx3xx.jpg", 2);
 
+
+
     /// Les arcs doivent être définis entre des sommets qui existent !
     // AJouter l'arc d'indice 0, allant du sommet 1 au sommet 2 de poids 50 etc...
     add_interfaced_edge(0, 1, 2, 50.0);
@@ -186,6 +189,69 @@ void Graph::make_example()
     add_interfaced_edge(8, 5, 2, 20.0);
     add_interfaced_edge(9, 3, 7, 80.0);
 }
+
+// Sous programme de construction des graphes
+void make_graphe(const std::string& vertex, const std::string& edge)
+{
+    m_interface = std::make_shared<GraphInterface>(50, 0, 750, 600);
+    remplissage_vertex(vertex);
+    remplissage_edge(edge);
+    
+}
+
+// Construction du graphe par lecture de fichier
+// Par méthode chargement de fichier : remplissage_vertex
+void Graph::remplissage_vertex(const std::string& nom_fichier){
+    // variables temp pour le remplissage de vertex
+    int ordre, indice, posx, posy;
+    float valeur;
+    std::string  nom_image;
+
+    std::ifstream fic(nom_fichier.c_str());
+    if ( !fic.is_open() )
+        throw "Probleme ouverture fichier !";
+    /// Construction du vecteur d'aretes
+    if ( fic.good())
+    {
+        fic >> ordre;
+        for (int i = 0; i < ordre; ++i)
+        {
+            // Initialisation des variables locales à chaque tour de boucle pour éviter de construire le mauvais sommet
+            indice = 0, valeur = 0.0, posx = 0, posy = 0, nom_image = "";
+            fic >> indice >> valeur >> posx >> posy >> nom_image ;
+            add_interfaced_vertex(indice,valeur,posx,posy,nom_image);
+        }
+    }
+
+}
+
+// Construction des aretes par lecture de fichier
+
+void Graph::remplissage_edge(const std::string& nom_fichier){
+    
+    // variables temp pour le remplissage de edges
+    int ordre, indice, sommet1, sommet2;
+    float poids;
+
+    std::ifstream fic(nom_fichier.c_str());
+    if ( !fic.is_open() )
+        throw "Probleme ouverture fichier !";
+    /// Construction du vecteur d'aretes
+    if ( fic.good())
+    {
+        fic >> ordre;
+        for (int i = 0; i < ordre; ++i)
+        {
+            // Initialisation des variables locales à chaque tour de boucle pour éviter de construire la mauvaise aretes
+            indice = 0, sommet1 = 0, sommet2 = 0, poids = 0.0 ;
+            fic >> indice >> sommet1 >> sommet2 >> poids ;
+            add_interfaced_edge(indice,sommet1,sommet2,poids);
+        }
+    }
+
+}
+
+
 
 /// La méthode update à appeler dans la boucle de jeu pour les graphes avec interface
 void Graph::update()
