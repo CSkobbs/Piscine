@@ -173,6 +173,8 @@ void Graph::make_example()
     add_interfaced_vertex(6,  0.0, 300, 500, "bad_clowns_xx3xx.jpg", 1);
     add_interfaced_vertex(7,  0.0, 500, 500, "bad_clowns_xx3xx.jpg", 2);
 
+
+
     /// Les arcs doivent être définis entre des sommets qui existent !
     // AJouter l'arc d'indice 0, allant du sommet 1 au sommet 2 de poids 50 etc...
     add_interfaced_edge(0, 1, 2, 50.0);
@@ -185,6 +187,33 @@ void Graph::make_example()
     add_interfaced_edge(7, 2, 0, 100.0);
     add_interfaced_edge(8, 5, 2, 20.0);
     add_interfaced_edge(9, 3, 7, 80.0);
+}
+// Construction du graphe par lecture de fichier
+// Par méthode chargement de fichier : load_file
+void Graph::remplissage_vertex(const std::string& nom_fichier){
+
+    // variables temp pour le remplissage de vertex
+    int ordre, indice, posx, posy,indice_img = 0;
+    float valeur;
+    string  nom_image;
+
+    std::ifstream fic(nom_fichier.c_str());
+    if ( !fic.is_open() )
+        throw "Probleme ouverture fichier !";
+    /// Construction du vecteur d'aretes
+    // std::vector<Arete> arete;
+    if ( fic.good())
+    {
+        fic >> ordre;
+        for (int i = 0; i < ordre; ++i)
+        {
+            // Initialisation des variables locales à chaque tour de boucle pour éviter de construire le mauvais sommet
+            indice = 0, posx = 0, posy = 0;
+            fic >> tmp1 >> tmp2 >> tmp3 ;
+            graphe.push_back(Arete(tmp1,tmp2,tmp3));
+        }
+    }
+    
 }
 
 /// La méthode update à appeler dans la boucle de jeu pour les graphes avec interface
