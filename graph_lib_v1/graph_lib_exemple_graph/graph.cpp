@@ -201,16 +201,15 @@ void Graph::remplissage_vertex(const std::string& nom_fichier){
     if ( !fic.is_open() )
         throw "Probleme ouverture fichier !";
     /// Construction du vecteur d'aretes
-    // std::vector<Arete> arete;
     if ( fic.good())
     {
         fic >> ordre;
         for (int i = 0; i < ordre; ++i)
         {
             // Initialisation des variables locales à chaque tour de boucle pour éviter de construire le mauvais sommet
-            indice = 0, posx = 0, posy = 0;
-            fic >> tmp1 >> tmp2 >> tmp3 ;
-            graphe.push_back(Arete(tmp1,tmp2,tmp3));
+            indice = 0, valeur = 0.0, posx = 0, posy = 0, nom_image = "", indice_img = 0;
+            fic >> indice >> valeur >> posx >> posy >> nom_image >> indice_img ;
+            add_interfaced_vertex(indice,valeur,posx,posy,nom_image,indice_img);
         }
     }
     
