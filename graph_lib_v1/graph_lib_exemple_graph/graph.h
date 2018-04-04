@@ -299,12 +299,16 @@ class Graph
         void add_interfaced_vertex(int idx, double value, int x, int y, std::string pic_name="", int pic_idx=0 );
         void add_interfaced_edge(int idx, int vert1, int vert2, double weight=0);
 
-        /// Méthode spéciale qui construit un graphe arbitraire (démo)
+        /// Méthode spéciale qui construit du graphe
         /// Voir implémentation dans le .cpp
-        /// Cette méthode est à enlever et remplacer par un système
-        /// de chargement de fichiers par exemple.
+        /// Cette méthode fait appel aux deux méthodes de construction avec le nom des fichiers nécessaires
         void make_example();
 
+        void make_graphe(const std::string& vertex, const std::string& edge);
+
+        // Méthode de construction des vertex et edges depuis le chargement de fichier 
+        void remplissage_vertex(const std::string& nom_fichier);
+        void remplissage_edge(const std::string& nom_fichier);
 
         /// La méthode update à appeler dans la boucle de jeu pour les graphes avec interface
         void update();
