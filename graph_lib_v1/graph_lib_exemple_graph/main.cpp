@@ -13,11 +13,14 @@ int main()
 
     /// Un exemple de graphe
     Graph g;
-    
+
     //g.make_example();
     // g.remplissage_vertex("sommet.txt");
-    
+
     g.make_graphe("sommet.txt","edge.txt");
+
+    g.ecriture_edge("edgetest.txt");
+
 
 
     /// Vous gardez la main sur la "boucle de jeu"
@@ -31,6 +34,7 @@ int main()
         /// Mise à jour générale (clavier/souris/buffer etc...)
         grman::mettre_a_jour();
     }
+
 
     grman::fermer_allegro();
 

@@ -197,7 +197,7 @@ void Graph::make_graphe(const std::string& vertex, const std::string& edge)
     m_interface = std::make_shared<GraphInterface>(50, 0, 750, 600);
     remplissage_vertex(vertex);
     remplissage_edge(edge);
-    
+
 }
 
 // Construction du graphe par lecture de fichier
@@ -229,7 +229,7 @@ void Graph::remplissage_vertex(const std::string& nom_fichier){
 // Construction des aretes par lecture de fichier
 
 void Graph::remplissage_edge(const std::string& nom_fichier){
-    
+
     // variables temp pour le remplissage de edges
     int ordre, indice, sommet1, sommet2;
     float poids;
@@ -254,8 +254,8 @@ void Graph::remplissage_edge(const std::string& nom_fichier){
 
 // Méthode d'écriture des aretes dans le fichier de destination
 // la méthode capture les valeurs des aretes lors de la fin de la boucle
-void Graph::ecriture_edge(std::map<int, Edge> m_edges, const std::string& nom_fichier){
-    
+void Graph::ecriture_edge(const std::string& nom_fichier){
+
     // variables temp pour le remplissage de edges
     // int ordre, indice, sommet1, sommet2, cmp = 0;
     // float poids;
@@ -265,15 +265,16 @@ void Graph::ecriture_edge(std::map<int, Edge> m_edges, const std::string& nom_fi
     if ( !fic.is_open() )
         throw "Probleme ouverture fichier !";
     /// Construction du vecteur d'aretes
-    if ( fic.good())
+    std::cout << "ecriture dans le fichier" << std::endl;
+    if ( fic.is_open())
     {
-        fic << m_edges.size() << endl;
-        for(const auto& elem: m_edges){
-
-            fic << cmp << elem->second()->m_from << elem->second()->m_to << elem->second()->m_weight << endl;
+        fic << m_edges.size() << std::endl;
+        for (auto it = m_edges.begin(); it!=m_edges.end(); ++it){
+            fic << cmp << " " << it->second.m_from <<" "<< it->second.m_to << " " << it->second.m_weight << std::endl;
             cmp++;
         }
     }
+    fic.close();
 }
 
 
@@ -334,5 +335,12 @@ void Graph::add_interfaced_edge(int idx, int id_vert1, int id_vert2, double weig
     EdgeInterface *ei = new EdgeInterface(m_vertices[id_vert1], m_vertices[id_vert2]);
     m_interface->m_main_box.add_child(ei->m_top_edge);
     m_edges[idx] = Edge(weight, ei);
+
+    m_edges[idx].m_from = id_vert1;
+    m_edges[idx].m_to = id_vert2;
+
+    m_vertices[id_vert1].m_out.push_back(idx);
+    m_vertices[id_vert2].m_in.push_back(idx);
+
 }
 
