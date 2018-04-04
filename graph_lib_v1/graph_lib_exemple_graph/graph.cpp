@@ -252,6 +252,30 @@ void Graph::remplissage_edge(const std::string& nom_fichier){
 
 }
 
+// Méthode d'écriture des aretes dans le fichier de destination
+// la méthode capture les valeurs des aretes lors de la fin de la boucle
+void Graph::ecriture_edge(std::map<int, Edge> m_edges, const std::string& nom_fichier){
+    
+    // variables temp pour le remplissage de edges
+    // int ordre, indice, sommet1, sommet2, cmp = 0;
+    // float poids;
+    int cmp = 0;
+
+    std::ofstream fic(nom_fichier.c_str());
+    if ( !fic.is_open() )
+        throw "Probleme ouverture fichier !";
+    /// Construction du vecteur d'aretes
+    if ( fic.good())
+    {
+        fic << m_edges.size() << endl;
+        for(const auto& elem: m_edges){
+
+            fic << cmp << elem->second()->m_from << elem->second()->m_to << elem->second()->m_weight << endl;
+            cmp++;
+        }
+    }
+}
+
 
 
 /// La méthode update à appeler dans la boucle de jeu pour les graphes avec interface
