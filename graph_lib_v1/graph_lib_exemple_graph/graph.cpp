@@ -1,4 +1,5 @@
 #include "graph.h"
+#include <fstream>
 
 /***************************************************
                     VERTEX
@@ -191,11 +192,11 @@ void Graph::make_example()
 // Construction du graphe par lecture de fichier
 // Par méthode chargement de fichier : load_file
 void Graph::remplissage_vertex(const std::string& nom_fichier){
-
+    m_interface = std::make_shared<GraphInterface>(50, 0, 750, 600);
     // variables temp pour le remplissage de vertex
-    int ordre, indice, posx, posy,indice_img = 0;
+    int ordre, indice, posx, posy;
     float valeur;
-    string  nom_image;
+    std::string  nom_image;
 
     std::ifstream fic(nom_fichier.c_str());
     if ( !fic.is_open() )
@@ -207,12 +208,12 @@ void Graph::remplissage_vertex(const std::string& nom_fichier){
         for (int i = 0; i < ordre; ++i)
         {
             // Initialisation des variables locales à chaque tour de boucle pour éviter de construire le mauvais sommet
-            indice = 0, valeur = 0.0, posx = 0, posy = 0, nom_image = "", indice_img = 0;
-            fic >> indice >> valeur >> posx >> posy >> nom_image >> indice_img ;
-            add_interfaced_vertex(indice,valeur,posx,posy,nom_image,indice_img);
+            indice = 0, valeur = 0.0, posx = 0, posy = 0, nom_image = "";
+            fic >> indice >> valeur >> posx >> posy >> nom_image ;
+            add_interfaced_vertex(indice,valeur,posx,posy,nom_image);
         }
     }
-    
+
 }
 
 /// La méthode update à appeler dans la boucle de jeu pour les graphes avec interface

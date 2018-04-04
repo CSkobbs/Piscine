@@ -13,7 +13,8 @@ int main()
 
     /// Un exemple de graphe
     Graph g;
-    g.make_example();
+    //g.make_example();
+    g.remplissage_vertex("sommet.txt");
 
 
     /// Vous gardez la main sur la "boucle de jeu"
