@@ -20,6 +20,7 @@ int main()
     g.make_graphe("sommet.txt","edge.txt");
 
     g.ecriture_edge("edgetest.txt");
+    g.ecriture_vertex("vertextest.txt");
 
 
 
