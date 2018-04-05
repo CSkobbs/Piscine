@@ -311,6 +311,7 @@ class Graph
         void remplissage_edge(const std::string& nom_fichier);
 
         //Méthode de remplissage du fichier edge.txt
+        void ecriture_vertex(const std::string& nom_fichier);
         void ecriture_edge(const std::string& nom_fichier);
 
 
