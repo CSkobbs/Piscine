@@ -281,6 +281,57 @@ void Graph::remplissage_edge(const std::string& nom_fichier){
     }
 
 }
+// Méthode d'écriture des sommets(vertex) dans le fichier de destination
+// la méthode capture les valeurs des sommets lors de la fin de la boucle
+void Graph::ecriture_vertex(const std::string& nom_fichier){
+
+    // variables temp pour le remplissage de edges
+    // int ordre, indice, sommet1, sommet2, cmp = 0;
+    // float poids;
+    int cmp = 0;
+
+    std::ofstream fic(nom_fichier.c_str());
+    if ( !fic.is_open() )
+        throw "Probleme ouverture fichier !";
+    /// Construction du vecteur d'aretes
+    if ( fic.is_open())
+    {
+        fic << m_vertices.size() << std::endl;
+        for (auto it = m_vertices.begin(); it!=m_vertices.end(); ++it){
+            // récupération des valeurs du sommet nécessaires à la construction de l'interface
+            // et à la sauvegarde des positions lors de la fin du jeu
+            // voir si problème héritage lors de la récupération des coordonnées
+            fic << cmp << " " << it->second.m_value <<" "<< it->second.get_posx() << " " << it->second.get_posy() << std::endl;
+            cmp++;
+        }
+    }
+    fic.close();
+}
+
+// Méthode d'écriture des aretes dans le fichier de destination
+// la méthode capture les valeurs des aretes lors de la fin de la boucle
+void Graph::ecriture_edge(const std::string& nom_fichier){
+
+    // variables temp pour le remplissage de edges
+    // int ordre, indice, sommet1, sommet2, cmp = 0;
+    // float poids;
+    int cmp = 0;
+
+    std::ofstream fic(nom_fichier.c_str());
+    if ( !fic.is_open() )
+        throw "Probleme ouverture fichier !";
+    /// Construction du vecteur d'aretes
+    if ( fic.is_open())
+    {
+        fic << m_edges.size() << std::endl;
+        for (auto it = m_edges.begin(); it!=m_edges.end(); ++it){
+            fic << cmp << " " << it->second.m_from <<" "<< it->second.m_to << " " << it->second.m_weight << std::endl;
+            cmp++;
+        }
+    }
+    fic.close();
+}
+
 
 
 
@@ -340,5 +391,12 @@ void Graph::add_interfaced_edge(int idx, int id_vert1, int id_vert2, double weig
     EdgeInterface *ei = new EdgeInterface(m_vertices[id_vert1], m_vertices[id_vert2]);
     m_interface->m_main_box.add_child(ei->m_top_edge);
     m_edges[idx] = Edge(weight, ei);
+
+    m_edges[idx].m_from = id_vert1;
+    m_edges[idx].m_to = id_vert2;
+
+    m_vertices[id_vert1].m_out.push_back(idx);
+    m_vertices[id_vert2].m_in.push_back(idx);
+
 }
 
