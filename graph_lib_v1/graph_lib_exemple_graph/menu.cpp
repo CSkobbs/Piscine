@@ -54,7 +54,7 @@ void menu(Graph G)
     menu_page2[3]=load_bitmap("Menu Decors/page2-3.bmp",NULL);
 
 
-    while(!key[KEY_P])
+    while(!key[KEY_A])
     {
         if(page_actuelle == 1)
         {
@@ -112,7 +112,31 @@ void menu(Graph G)
             if ((key[KEY_ENTER])&& (etat==1))
             {
 
-                while(!key[KEY_F])
+                while(!key[KEY_ESC])
+                {
+
+                    G.update();
+                    grman::mettre_a_jour();
+
+                }
+            }
+
+            if ((key[KEY_ENTER])&& (etat==2))
+            {
+
+               while(!key[KEY_ESC])
+                {
+
+                    G.update();
+                    grman::mettre_a_jour();
+
+                }
+            }
+
+
+            if ((key[KEY_ENTER])&& (etat==3))
+            {
+                while(!key[KEY_ESC])
                 {
 
                     G.update();
@@ -120,18 +144,6 @@ void menu(Graph G)
 
                 }
 
-            }
-
-            if ((key[KEY_ENTER])&& (etat==2))
-            {
-
-                G.update();
-            }
-
-            if ((key[KEY_ENTER])&& (etat==3))
-            {
-
-                G.update();
             }
             draw_sprite(screen, buffer,0,0);
 
