@@ -15,7 +15,7 @@ VertexInterface::VertexInterface(int idx, int x, int y, std::string pic_name, in
 
     // Le slider de r�glage de valeur
     m_top_box.add_child( m_slider_value );
-    m_slider_value.set_range(0.0 , 100.0); // Valeurs arbitraires, � adapter...
+    m_slider_value.set_range(0.0, 100.0);  // Valeurs arbitraires, � adapter...
     m_slider_value.set_dim(20,80);
     m_slider_value.set_gravity_xy(grman::GravityX::Left, grman::GravityY::Up);
 
@@ -94,7 +94,7 @@ EdgeInterface::EdgeInterface(Vertex& from, Vertex& to)
 
     // Le slider de r�glage de valeur
     m_box_edge.add_child( m_slider_weight );
-    m_slider_weight.set_range(0.0 , 100.0); // Valeurs arbitraires, � adapter...
+    m_slider_weight.set_range(0.0, 100.0);  // Valeurs arbitraires, � adapter...
     m_slider_weight.set_dim(16,40);
     m_slider_weight.set_gravity_y(grman::GravityY::Up);
 
@@ -150,6 +150,40 @@ GraphInterface::GraphInterface(int x, int y, int w, int h)
     m_main_box.set_dim(1100,1100);
     m_main_box.set_gravity_xy(grman::GravityX::Right, grman::GravityY::Up);
     m_main_box.set_bg_color(BLANCJAUNE);
+
+    /// Le cadre d'ensemble de l'interface; x y coin sup. gauche, largeur, hauteur
+    /// Le fond sera gris clair et on pourra le bouger à la souris (drag & drop)
+    m_top_box.set_frame(0, 0, 1025,800);
+    m_top_box.set_bg_color(GRISCLAIR);
+
+    /// Les liens sont ajoutés en 1er pour que les autres éléments soient affichés au dessus
+    m_top_box.add_child( m_boite_boutons );
+    m_boite_boutons.set_frame(0,700,1025,100);
+    m_boite_boutons.set_bg_color(BLANC);
+    //Bouton 1
+    m_boite_boutons.add_child(m_bouton1);
+    m_bouton1.set_frame(0,0,255,100);
+    m_bouton1.set_bg_color(ROSE);
+    m_bouton1.add_child(m_bouton1_label);
+    m_bouton1_label.set_message("Sauver");
+    //Bouton 2
+    m_boite_boutons.add_child(m_bouton2);
+    m_bouton2.set_frame(255,0,255,100);
+    m_bouton2.set_bg_color(ROSE);
+    m_bouton2.add_child(m_bouton2_label);
+    m_bouton2_label.set_message("Changer");
+    //Bouton 3
+    m_boite_boutons.add_child(m_bouton3);
+    m_bouton3.set_frame(510,0,255,100);
+    m_bouton3.set_bg_color(ROSE);
+    m_bouton3.add_child(m_bouton3_label);
+    m_bouton3_label.set_message("Ajouter");
+    //Bouton 4
+    m_boite_boutons.add_child(m_bouton4);
+    m_bouton4.set_frame(765,0,255,100);
+    m_bouton4.set_bg_color(ROSE);
+    m_bouton4.add_child(m_bouton4_label);
+    m_bouton4_label.set_message("Supprimer");
 }
 
 
@@ -233,7 +267,8 @@ void Graph::make_graphe(const std::string& vertex, const std::string& edge)
 
 // Construction du graphe par lecture de fichier
 // Par m�thode chargement de fichier : remplissage_vertex
-void Graph::remplissage_vertex(const std::string& nom_fichier){
+void Graph::remplissage_vertex(const std::string& nom_fichier)
+{
     // variables temp pour le remplissage de vertex
     int ordre, indice, posx, posy;
     float valeur;
@@ -259,7 +294,8 @@ void Graph::remplissage_vertex(const std::string& nom_fichier){
 
 // Construction des aretes par lecture de fichier
 
-void Graph::remplissage_edge(const std::string& nom_fichier){
+void Graph::remplissage_edge(const std::string& nom_fichier)
+{
 
     // variables temp pour le remplissage de edges
     int ordre, indice, sommet1, sommet2;
@@ -285,7 +321,8 @@ void Graph::remplissage_edge(const std::string& nom_fichier){
 
 // M�thode d'�criture des aretes dans le fichier de destination
 // la m�thode capture les valeurs des aretes lors de la fin de la boucle
-void Graph::ecriture_edge(const std::string& nom_fichier){
+void Graph::ecriture_edge(const std::string& nom_fichier)
+{
 
     // variables temp pour le remplissage de edges
     // int ordre, indice, sommet1, sommet2, cmp = 0;
@@ -299,7 +336,8 @@ void Graph::ecriture_edge(const std::string& nom_fichier){
     if ( fic.is_open())
     {
         fic << m_vertices.size() << std::endl;
-        for (auto it = m_vertices.begin(); it!=m_vertices.end(); ++it){
+        for (auto it = m_vertices.begin(); it!=m_vertices.end(); ++it)
+        {
             // r�cup�ration des valeurs du sommet n�cessaires � la construction de l'interface
             // et � la sauvegarde des positions lors de la fin du jeu
             // voir si probl�me h�ritage lors de la r�cup�ration des coordonn�es
@@ -312,7 +350,8 @@ void Graph::ecriture_edge(const std::string& nom_fichier){
 
 // M�thode d'�criture des sommets(vertex) dans le fichier de destination
 // la m�thode capture les valeurs des sommets lors de la fin de la boucle
-void Graph::ecriture_vertex(const std::string& nom_fichier){
+void Graph::ecriture_vertex(const std::string& nom_fichier)
+{
 
     // variables temp pour le remplissage de edges
     // int ordre, indice, sommet1, sommet2, cmp = 0;
@@ -326,7 +365,8 @@ void Graph::ecriture_vertex(const std::string& nom_fichier){
     if ( fic.is_open())
     {
         fic << m_vertices.size() << std::endl;
-        for (auto it = m_vertices.begin(); it!=m_vertices.end(); ++it){
+        for (auto it = m_vertices.begin(); it!=m_vertices.end(); ++it)
+        {
             // r�cup�ration des valeurs du sommet n�cessaires � la construction de l'interface
             // et � la sauvegarde des positions lors de la fin du jeu
             // voir si probl�me h�ritage lors de la r�cup�ration des coordonn�es
@@ -358,6 +398,30 @@ void Graph::update()
 
     for (auto &elt : m_edges)
         elt.second.post_update();
+
+    if ( m_interface->m_bouton1.clicked() )
+    {
+        std::cout << "OK1" << std::endl;
+        //appeler la fonction sauvegarder
+    }
+
+    if ( m_interface->m_bouton2.clicked() )
+    {
+        std::cout << "OK2" << std::endl;
+        //appeler la fonction charger
+    }
+
+    if ( m_interface->m_bouton3.clicked() )
+    {
+        std::cout << "OK3" << std::endl;
+        //appeler la fonction ajouter
+    }
+
+    if ( m_interface->m_bouton4.clicked() )
+    {
+        std::cout << "OK4" << std::endl;
+        //appeler la fonction supprimer
+    }
 
 }
 
@@ -404,3 +468,54 @@ void Graph::add_interfaced_edge(int idx, int id_vert1, int id_vert2, double weig
 
 }
 
+
+/*void Graph::cliquer()
+{
+    if ( m_bouton1.clicked() )
+    {
+        std::cout << "OK1" << std::endl;
+        //appeler la fonction sauvegarder
+    }
+
+    if ( m_bouton2.clicked() )
+    {
+        std::cout << "OK2" << std::endl;
+        //appeler la fonction charger
+    }
+
+    if ( m_bouton3.clicked() )
+    {
+        std::cout << "OK3" << std::endl;
+        //appeler la fonction ajouter
+    }
+
+    if ( m_bouton4.clicked() )
+    {
+        std::cout << "OK4" << std::endl;
+        //appeler la fonction supprimer
+    }
+}
+
+/// Une méthode update de la classe doit être appelée dans la boucle de jeu
+/// et cette méthode doit propager l'appel à update sur les widgets contenus...
+/// Cette méthode fait le lien entre l'interface, les événements, et les conséquences
+void Thing::update()
+{
+
+    /// Si tous les widgets dépendants de l'objet sont dans une top box
+    /// alors ce seul appel suffit (la propagation d'updates se fait ensuite automatiquement)
+    m_top_box.update();
+
+    /// Utilisation d'un bouton pour déclencher un événement
+    /// L'accès à clicked() fait un reset : tant que le bouton n'est pas
+    /// à nouveau cliqué les futurs accès à clicked seront faux
+    /// ( Donc il faut appeler clicked() UNE FOIS ET UNE SEULE par update )
+
+
+}
+
+
+/// On a des allocations dynamiques dans m_dynaclowns => à nettoyer dans le destructeur
+Thing::~Thing()
+{}
+*/

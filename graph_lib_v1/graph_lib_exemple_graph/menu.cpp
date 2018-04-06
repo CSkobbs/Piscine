@@ -97,9 +97,11 @@ void menu(Graph G, Graph H, Graph B)
                 {
 
                     G.update();
+
                     grman::mettre_a_jour();
 
-               }
+
+                }
 
             }
 
@@ -113,7 +115,7 @@ void menu(Graph G, Graph H, Graph B)
                     H.update();
                     grman::mettre_a_jour();
 
-               }
+                }
             }
 
             if ((key[KEY_ENTER])&& (etat==3))
@@ -126,7 +128,7 @@ void menu(Graph G, Graph H, Graph B)
                     B.update();
                     grman::mettre_a_jour();
 
-               }
+                }
             }
 
 
