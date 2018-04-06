@@ -159,36 +159,66 @@ GraphInterface::GraphInterface(int x, int y, int w, int h)
 /// "à la main" dans le code comme ça.
 void Graph::make_example()
 {
-    m_interface = std::make_shared<GraphInterface>(50, 0, 750, 600);
+    m_interface = std::make_shared<GraphInterface>(0, 0, 800, 600);
     // La ligne précédente est en gros équivalente à :
     // m_interface = new GraphInterface(50, 0, 750, 600);
 
     /// Les sommets doivent être définis avant les arcs
     // Ajouter le sommet d'indice 0 de valeur 30 en x=200 et y=100 avec l'image clown1.jpg etc...
-    add_interfaced_vertex(0, 30.0, 200, 100, "clown1.jpg");
-    add_interfaced_vertex(1, 60.0, 400, 100, "clown2.jpg");
-    add_interfaced_vertex(2,  50.0, 200, 300, "clown3.jpg");
-    add_interfaced_vertex(3,  0.0, 400, 300, "clown4.jpg");
-    add_interfaced_vertex(4,  100.0, 600, 300, "clown5.jpg");
-    add_interfaced_vertex(5,  0.0, 100, 500, "bad_clowns_xx3xx.jpg", 0);
-    add_interfaced_vertex(6,  0.0, 300, 500, "bad_clowns_xx3xx.jpg", 1);
-    add_interfaced_vertex(7,  0.0, 500, 500, "bad_clowns_xx3xx.jpg", 2);
-    add_interfaced_vertex(8,  10.0, 10, 50, "sable.jpg");
+    add_interfaced_vertex(0, 30.0, 400, 450, "carriere.jpg");
+    add_interfaced_vertex(1, 60.0, 200, 350, "carbonate.jpg");
+    add_interfaced_vertex(2,  50.0, 300, 350, "sable.jpg");
+    add_interfaced_vertex(3,  0.0, 500, 350, "calcaire.jpg");
+    add_interfaced_vertex(4,  100.0, 700, 350, "granulat.jpg");
+    add_interfaced_vertex(5,  0.0, 100, 275, "calcin.jpg");
+    add_interfaced_vertex(6,  0.0, 300, 200, "verre.jpg");
+    add_interfaced_vertex(7,  0.0, 500, 200, "ciment.jpg");
+    add_interfaced_vertex(8,  10.0, 700, 200, "goudron.jpg");
+    add_interfaced_vertex(9, 30.0, 100, 100, "erosion.jpg");
+    add_interfaced_vertex(10, 60.0, 250, 50, "recyclage.jpg");
+    add_interfaced_vertex(11,  50.0, 500, 75, "batiment.jpg");
+    add_interfaced_vertex(12,  0.0, 700, 75, "route.jpg");
+
 
 
 
     /// Les arcs doivent être définis entre des sommets qui existent !
     // AJouter l'arc d'indice 0, allant du sommet 1 au sommet 2 de poids 50 etc...
-    add_interfaced_edge(0, 1, 2, 50.0);
-    add_interfaced_edge(1, 0, 1, 50.0);
-    add_interfaced_edge(2, 1, 3, 75.0);
-    add_interfaced_edge(3, 4, 1, 25.0);
-    add_interfaced_edge(4, 6, 3, 25.0);
-    add_interfaced_edge(5, 7, 3, 25.0);
-    add_interfaced_edge(6, 3, 4, 0.0);
-    add_interfaced_edge(7, 2, 0, 100.0);
-    add_interfaced_edge(8, 5, 2, 20.0);
-    add_interfaced_edge(9, 3, 7, 80.0);
+    add_interfaced_edge(0, 0, 1, 50.0);
+    add_interfaced_edge(1, 0, 2, 50.0);
+    add_interfaced_edge(2, 0, 3, 50.0);
+    add_interfaced_edge(3, 0, 4, 75.0);
+
+    add_interfaced_edge(4, 1, 6, 25.0);
+
+    add_interfaced_edge(5, 2, 6, 25.0);
+    add_interfaced_edge(6, 2, 7, 25.0);
+
+    add_interfaced_edge(7, 3, 6, 0.0);
+    add_interfaced_edge(8, 3, 7, 100.0);
+
+    add_interfaced_edge(9, 4, 8, 20.0);
+
+    add_interfaced_edge(10, 5, 6, 80.0);
+
+    add_interfaced_edge(11, 6, 10, 50.0);
+    add_interfaced_edge(12, 6, 11, 50.0);
+
+    add_interfaced_edge(13, 7, 11, 50.0);
+
+    add_interfaced_edge(14, 8, 12, 75.0);
+
+    add_interfaced_edge(15, 9, 0, 25.0);
+    add_interfaced_edge(16, 9, 11, 25.0);
+
+    add_interfaced_edge(17, 10, 4, 25.0);
+    add_interfaced_edge(18, 10, 5, 0.0);
+
+    add_interfaced_edge(19, 11, 10, 100.0);
+
+
+
+
 }
 
 // Sous programme de construction des graphes
@@ -197,7 +227,7 @@ void Graph::make_graphe(const std::string& vertex, const std::string& edge)
     m_interface = std::make_shared<GraphInterface>(50, 0, 750, 600);
     remplissage_vertex(vertex);
     remplissage_edge(edge);
-    
+
 }
 
 // Construction du graphe par lecture de fichier
@@ -229,7 +259,7 @@ void Graph::remplissage_vertex(const std::string& nom_fichier){
 // Construction des aretes par lecture de fichier
 
 void Graph::remplissage_edge(const std::string& nom_fichier){
-    
+
     // variables temp pour le remplissage de edges
     int ordre, indice, sommet1, sommet2;
     float poids;
