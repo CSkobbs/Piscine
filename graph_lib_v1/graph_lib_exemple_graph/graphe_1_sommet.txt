@@ -1,0 +1,9 @@
+8
+0 30.0 400 650 tulipe.jpg
+1 60.0 800 650 coquelicot.jpg
+2 50.0 100 400 arrosoire.jpg
+3 0.0 400 300 abeille.jpg
+4 100.0 800 300 bourdon.jpg
+5 0.0 100 50 soleil.jpg
+6 0.0 400 100 courgette.jpg
+7 0.0 800 100 tomate.jpg

@@ -119,6 +119,7 @@ class VertexInterface
         // Le constructeur met en place les éléments de l'interface
         // voir l'implémentation dans le .cpp
         VertexInterface(int idx, int x, int y, std::string pic_name="", int pic_idx=0);
+
 };
 
 
@@ -161,7 +162,9 @@ class Vertex
         /// Voir l'implémentation Graph::update dans le .cpp
         void pre_update();
         void post_update();
+
 };
+
 
 
 
@@ -263,6 +266,22 @@ class GraphInterface
         /// Dans cette boite seront ajoutés des boutons de contrôle etc...
         grman::WidgetBox m_tool_box;
 
+        /// Utiliser une top_box de type WidgetBox pour encapsuler
+        /// tous les éléments de l'interface associés à votre objet
+        //grman::WidgetBox m_top_box;
+
+        /// Les Widgets qui constitueront l'interface de l'objet
+
+        grman::WidgetBox m_boite_boutons;    // Sera la boite à boutons en bas
+        grman::WidgetButton m_bouton1;       // Sera le bouton pour sauvegarder
+        grman::WidgetText m_bouton1_label;   // Le texte sauver
+        grman::WidgetButton m_bouton2;       // Sera le bouton pour charger
+        grman::WidgetText m_bouton2_label;  // Le texte charger
+        grman::WidgetButton m_bouton3;       // Sera le bouton pour ajouter
+        grman::WidgetText m_bouton3_label;   // Le texte ajouter
+        grman::WidgetButton m_bouton4;       // Sera le bouton pour supprimer
+        grman::WidgetText m_bouton4_label;  // Le texte supprimer
+
 
         // A compléter éventuellement par des widgets de décoration ou
         // d'édition (boutons ajouter/enlever ...)
@@ -287,7 +306,6 @@ class Graph
 
         /// le POINTEUR sur l'interface associée, nullptr -> pas d'interface
         std::shared_ptr<GraphInterface> m_interface = nullptr;
-
 
     public:
 
@@ -318,6 +336,42 @@ class Graph
         /// La méthode update à appeler dans la boucle de jeu pour les graphes avec interface
         void update();
 };
+/*
+class Thing {
 
+    private :
+        /// Utiliser une top_box de type WidgetBox pour encapsuler
+        /// tous les éléments de l'interface associés à votre objet
+        grman::WidgetBox m_top_box;
 
+        /// Les Widgets qui constitueront l'interface de l'objet
+
+        grman::WidgetBox m_boite_boutons;    // Sera la boite à boutons en bas
+        grman::WidgetButton m_bouton1;       // Sera le bouton pour sauvegarder
+        grman::WidgetText m_bouton1_label;   // Le texte sauver
+        grman::WidgetButton m_bouton2;       // Sera le bouton pour charger
+        grman::WidgetText m_bouton2_label;  // Le texte charger
+        grman::WidgetButton m_bouton3;       // Sera le bouton pour ajouter
+        grman::WidgetText m_bouton3_label;   // Le texte ajouter
+        grman::WidgetButton m_bouton4;       // Sera le bouton pour supprimer
+        grman::WidgetText m_bouton4_label;  // Le texte supprimer
+
+    public :
+
+        /// Le constructeur de la classe (pas forcément par défaut !)
+        /// initialise les données des widgets, place la hiérarchie des sous-cadres etc...
+        Thing();
+
+        /// Une méthode "update" de la classe doit être appelée dans la boucle de jeu
+        /// et cette méthode doit propager l'appel à update sur les widgets contenus...
+        /// Cette méthode fait le lien entre l'interface, les événements, et les conséquences
+        //  ( Cette méthode pourrait s'appeler autrement, avoir des paramètres... )
+        void update();
+
+        /// On a des allocations dynamiques dans m_dynaclowns => à nettoyer dans le destructeur
+        ~Thing();
+
+};
+
+*/
 #endif // GRAPH_H_INCLUDED
