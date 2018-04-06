@@ -1,6 +1,1 @@
-5
-0 30 198 198 clown1.jpg
-1 60 398 398 clown2.jpg
-2 50 198 198 clown3.jpg
-3 0 398 398 clown4.jpg
-4 100 598 598 clown5.jpg
+0

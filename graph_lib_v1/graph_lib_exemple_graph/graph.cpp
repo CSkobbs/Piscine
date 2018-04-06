@@ -138,7 +138,7 @@ void Edge::post_update()
 /// éléments qui seront ensuite ajoutés lors de la mise ne place du Graphe
 GraphInterface::GraphInterface(int x, int y, int w, int h)
 {
-    m_top_box.set_dim(1000,740);
+    m_top_box.set_dim(1100,1100);
     m_top_box.set_gravity_xy(grman::GravityX::Right, grman::GravityY::Up);
 
     m_top_box.add_child(m_tool_box);
@@ -147,7 +147,7 @@ GraphInterface::GraphInterface(int x, int y, int w, int h)
     m_tool_box.set_bg_color(BLANCBLEU);
 
     m_top_box.add_child(m_main_box);
-    m_main_box.set_dim(908,720);
+    m_main_box.set_dim(1100,1100);
     m_main_box.set_gravity_xy(grman::GravityX::Right, grman::GravityY::Up);
     m_main_box.set_bg_color(BLANCJAUNE);
 }
@@ -298,19 +298,10 @@ void Graph::ecriture_edge(const std::string& nom_fichier){
     /// Construction du vecteur d'aretes
     if ( fic.is_open())
     {
-<<<<<<< refs/remotes/origin/develop
         fic << m_edges.size() << std::endl;
         for (auto it = m_edges.begin(); it!=m_edges.end(); ++it){
             fic << cmp << " " << it->second.m_from <<" "<< it->second.m_to << " " << it->second.m_weight << std::endl;
-=======
-        fic << m_vertices.size() << std::endl;
-        for (auto it = m_vertices.begin(); it!=m_vertices.end(); ++it){
-            // récupération des valeurs du sommet nécessaires à la construction de l'interface
-            // et à la sauvegarde des positions lors de la fin du jeu
-            // voir si problème héritage lors de la récupération des coordonnées
-            fic << cmp << " " << it->second.m_value <<" "<< it->second.m_interface->m_top_box.get_posx() << " " << it->second.m_interface->m_top_box.get_posx() << " " << it->second.m_interface->m_img.get_pic_name() << std::endl;
->>>>>>> correctif ecriture des vertex
-            cmp++;
+
         }
     }
     fic.close();

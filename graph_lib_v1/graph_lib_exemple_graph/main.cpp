@@ -12,16 +12,22 @@ int main()
     grman::set_pictures_path("pics");
 
     /// Un exemple de graphe
-    Graph g;
+    Graph g,h,b;
 
     //g.make_example();
     // g.remplissage_vertex("sommet.txt");
 
-    g.make_graphe("sommet.txt","edge.txt");
+    g.make_graphe("graphe_1_sommet.txt","graphe_1_arete.txt");
+    g.ecriture_edge("graphe_1_sommet_test.txt");
+    g.ecriture_vertex("graphe_1_arete_test.txt");
 
-    g.ecriture_edge("edgetest.txt");
-    g.ecriture_vertex("vertextest.txt");
+    h.make_graphe("graphe_1_sommet.txt","graphe_1_arete.txt");
+    h.ecriture_edge("graphe_1_sommet_test.txt");
+    h.ecriture_vertex("graphe_1_arete_test.txt");
 
+    b.make_graphe("graphe_3_sommet.txt","graphe_3_arete.txt");
+    b.ecriture_edge("graphe_3_sommet_test.txt");
+    b.ecriture_vertex("graphe_3_arete_test.txt");
 
 
     /// Vous gardez la main sur la "boucle de jeu"
@@ -29,7 +35,7 @@ int main()
     while ( !key[KEY_ESC] )
     {
         /// Il faut appeler les méthodes d'update des objets qui comportent des widgets
-        menu(g);
+        menu(g,h,b);
         //g.update();
 
         /// Mise à jour générale (clavier/souris/buffer etc...)

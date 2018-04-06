@@ -1,7 +1,7 @@
 #include "menu.h"
 
 
-void menu(Graph G)
+void menu(Graph G, Graph H, Graph B)
 {
     BITMAP * buffer;
 
@@ -110,7 +110,7 @@ void menu(Graph G)
                 while(!key[KEY_F])
                 {
 
-                    G.update();
+                    H.update();
                     grman::mettre_a_jour();
 
                }
@@ -123,7 +123,7 @@ void menu(Graph G)
                 while(!key[KEY_F])
                 {
 
-                    G.update();
+                    B.update();
                     grman::mettre_a_jour();
 
                }
