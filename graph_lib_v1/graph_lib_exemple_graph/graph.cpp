@@ -301,7 +301,7 @@ void Graph::ecriture_vertex(const std::string& nom_fichier){
             // récupération des valeurs du sommet nécessaires à la construction de l'interface
             // et à la sauvegarde des positions lors de la fin du jeu
             // voir si problème héritage lors de la récupération des coordonnées
-            fic << cmp << " " << it->second.m_value <<" "<< it->second.get_posx() << " " << it->second.get_posy() << std::endl;
+            fic << cmp << " " << it->second.m_value <<" "<< it->second.m_interface->m_top_box.get_posx() << " " << it->second.m_interface->m_top_box.get_posx() << " " << it->second.m_interface->m_img.get_pic_name() << std::endl;
             cmp++;
         }
     }
