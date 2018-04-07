@@ -1,9 +1,37 @@
 #include "graph.h"
 #include <fstream>
 
+/*************************************************
+        CONSTANTES DYNAMIQUES DE POPULATIONS
+***************************************************/
+#ifndef REPRO
+#define REPRO 10
+#endif
+
+// Capacité de portage de l'environnement : facteur K dans le cdc
+#ifndef PORTAGE
+#define PORTAGE 100
+#endif
+
+#ifndef PAS
+#define PAS 0.1
+#endif
+
+// Efficacité des prédateurs
+#ifndef PREDATION
+#define PREDATION 0.1
+#endif
+
+// Variable globale de temps
+extern int temps_dynamique_population;
+
+
+
 /***************************************************
                     VERTEX
 ****************************************************/
+
+
 
 /// Le constructeur met en place les �l�ments de l'interface
 VertexInterface::VertexInterface(int idx, int x, int y, std::string pic_name, int pic_idx)
@@ -48,12 +76,12 @@ void Vertex::pre_update()
 {
     if (!m_interface)
         return;
-
+    std::cout << "value pre_update : " << m_value << std::endl;
     /// Copier la valeur locale de la donn�e m_value vers le slider associ�
     m_interface->m_slider_value.set_value(m_value);
 
     /// Copier la valeur locale de la donn�e m_value vers le label sous le slider
-    m_interface->m_label_value.set_message( std::to_string( (int)m_value) );
+    m_interface->m_label_value.set_message( std::to_string( (int)m_value));
 }
 
 
@@ -63,11 +91,10 @@ void Vertex::post_update()
     if (!m_interface)
         return;
 
+    std::cout << "value post_update : " << m_value << std::endl;
     /// Reprendre la valeur du slider dans la donn�e m_value locale
     m_value = m_interface->m_slider_value.get_value();
 }
-
-
 
 
 /***************************************************
@@ -379,17 +406,115 @@ void Graph::ecriture_vertex(const std::string& nom_fichier)
 
 
 
+/************************************************
+        Deuxième approche DYNAMIQUE : Graph
+
+    - la dynamique se fait au niveau du graph
+    - pour un accès direct aux valeurs des prédécesseurs
+    - du sommet à traiter
+**************************************************/
+// Les deux vecteurs sont symétriques et de meme taille
+// un ajout d'un prédateur entraine l'ajout de sa population à l'instant t
+// Pour que le modèle reste valide il faut que la dynamique soit
+// rafraichit tous les tours de boucles et doit être gérer par un pas
+// suivant l'évolution de la population
+
+void Graph::Recherchepreda(Vertex proie,std::vector<int> & coeff,std::vector<int> & pop)
+{
+
+    // Recherche des coefficient des prédateurs : poids des aretes des prédecesseurs
+    for (int i = 0; i < m_edges.size(); ++i)
+    {
+        for (int j = 0; j < proie.m_in.size(); ++j)
+                {
+                    if (m_edges[i].m_to == proie.m_in[j])
+                        {
+
+                            // Condition pour savoir si prédésseur
+
+                            // Ajout des coefficients de prédation des prédateurs
+                            coeff.push_back(m_edges[i].m_weight);
+                            // Ajout de la valeur du sommet prédésseurs
+                            pop.push_back(m_vertices[i].m_value);
+
+                        }
+                }
+    }
+    // Recherche des populations de prédateurs : valeur des prédécesseurs
+
+}
+
+void Graph::Dynamique_pop(Vertex & Proie)
+{
+    // Calcul du coeff de prédation
+    int Predation = 0;
+    std::vector<int> coeff_preda,pop_preda;
+
+    Recherchepreda(Proie,coeff_preda,pop_preda);
+
+    // std::cout << "Predation : " << Predation << std::endl;
+
+    for (int i = 0; i < coeff_preda.size(); ++i)
+    {
+        // recherche du coeff de prédation
+        // somme des differents coeff d'efficatité des prédateurs * nombre de prédateurs
+        // attention récuperer les tailles de populations des autres prédateurs
+        Predation += coeff_preda[i]*pop_preda[i]*PREDATION;
+    }
+
+    // std::cout << "coeff.size : " << coeff_preda.size() << std::endl;
+    // std::cout << "pop_preda.size : " << pop_preda.size() << std::endl;
+
+    // std::cout << "Temps : " << temps_dynamique_population << std::endl;
+
+    // d'apres la formule du cours :
+    // ajouter le pas avec i dans les arguments de la fonction
+    // i compteur de boucle de jeu et non compteur lors du parcours du vecteur de prédécesseurs
+
+    // Avec Prédation
+    // Proie.m_value = Proie.m_value + temps_dynamique_population*PAS*(REPRO*(1 - Proie.m_value/PORTAGE) - Predation);
+    // Sans prédation
+    Proie.m_value = Proie.m_value + temps_dynamique_population*PAS*(REPRO*(1 - Proie.m_value/PORTAGE));
+}
+
+
 /// La m�thode update � appeler dans la boucle de jeu pour les graphes avec interface
 void Graph::update()
 {
+    int cmp = 0;
     if (!m_interface)
         return;
+
+
+    // Dynamique des populations
+    for (auto &elt : m_vertices)
+    {
+        Dynamique_pop(elt.second);
+        // std::cout << "Population du sommet [] " << i << " : "<< m_vertices[i].m_value << std::endl;
+        std::cout << "Population du sommet " <<  cmp << " "<< elt.second.m_value << std::endl;
+        std::cout << "--------------------------------------" << std::endl;
+        cmp ++;
+
+    }
 
     for (auto &elt : m_vertices)
         elt.second.pre_update();
 
+
+
     for (auto &elt : m_edges)
         elt.second.pre_update();
+
+
+
+    // for (int i = 0; i < m_vertices.size(); ++i)
+    // {
+
+    //     Dynamique_pop(m_vertices[i]);
+
+    // }
+
+
 
     m_interface->m_top_box.update();
 
@@ -467,6 +592,7 @@ void Graph::add_interfaced_edge(int idx, int id_vert1, int id_vert2, double weig
     m_vertices[id_vert2].m_in.push_back(idx);
 
 }
+
 
 
 /*void Graph::cliquer()

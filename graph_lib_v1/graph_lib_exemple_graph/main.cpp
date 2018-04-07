@@ -3,8 +3,18 @@
 #include "menu.h"
 #include "graph.h"
 
+
+/// VARIABLE GLOBALE
+// variable temporelle vitale pour la dynamique des populations
+// la dynamique est régie par des équations différentielles
+// elles sont donc dépendantes du temps on a donc cmp = temps
+// cette variable est globale car tous les sous-programmes de 
+// calcul de populations ont besoin du temps pour gérer la population au temps t+1
+// extern int temps_dynamique_population;
+
 int main()
 {
+    // temps_dynamique_population = 0;
     /// A appeler en 1er avant d'instancier des objets graphiques etc...
     grman::init();
 

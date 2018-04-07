@@ -162,7 +162,6 @@ class Vertex
         /// Voir l'implémentation Graph::update dans le .cpp
         void pre_update();
         void post_update();
-
 };
 
 
@@ -335,6 +334,12 @@ class Graph
 
         /// La méthode update à appeler dans la boucle de jeu pour les graphes avec interface
         void update();
+
+
+        /// dynamiques des population
+        void Recherchepreda(Vertex proie,std::vector<int> & coeff,std::vector<int> & pop);
+        void Dynamique_pop(Vertex & Proie); 
+
 };
 /*
 class Thing {
