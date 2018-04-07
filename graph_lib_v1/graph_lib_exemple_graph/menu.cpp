@@ -1,5 +1,6 @@
 #include "menu.h"
 
+// variable globale de temps pour lier l'évolution de la population au temps
 int temps_dynamique_population;
 
 void menu(Graph G, Graph H, Graph B)

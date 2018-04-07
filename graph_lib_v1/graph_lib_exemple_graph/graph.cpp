@@ -14,12 +14,12 @@
 #endif
 
 #ifndef PAS
-#define PAS 0.1
+#define PAS 0.05
 #endif
 
 // Efficacité des prédateurs
 #ifndef PREDATION
-#define PREDATION 0.1
+#define PREDATION 0.5
 #endif
 
 // Variable globale de temps
@@ -452,7 +452,6 @@ void Graph::Dynamique_pop(Vertex & Proie)
 
     Recherchepreda(Proie,coeff_preda,pop_preda);
 
-    // std::cout << "Predation : " << Predation << std::endl;
 
     for (int i = 0; i < coeff_preda.size(); ++i)
     {
@@ -461,6 +460,19 @@ void Graph::Dynamique_pop(Vertex & Proie)
         // attention récuperer les tailles de populations des autres prédateurs
         Predation += coeff_preda[i]*pop_preda[i]*PREDATION;
     }
+    if (Predation > 100)
+    {
+        Predation = Predation/100;
+    }
+
+
+    for (int i = 0; i < coeff_preda.size(); ++i)
+    {
+        std::cout << "coeff : " << coeff_preda[i] << std::endl;
+
+    }
+
+    // std::cout << "Predation : " << Predation << std::endl;
 
     // std::cout << "coeff.size : " << coeff_preda.size() << std::endl;
     // std::cout << "pop_preda.size : " << pop_preda.size() << std::endl;
@@ -472,9 +484,9 @@ void Graph::Dynamique_pop(Vertex & Proie)
     // i compteur de boucle de jeu et non compteur lors du parcours du vecteur de prédécesseurs
 
     // Avec Prédation
-    // Proie.m_value = Proie.m_value + temps_dynamique_population*PAS*(REPRO*(1 - Proie.m_value/PORTAGE) - Predation);
+    Proie.m_value = Proie.m_value + temps_dynamique_population*PAS*(REPRO*(1 - Proie.m_value/PORTAGE) - Predation);
     // Sans prédation
-    Proie.m_value = Proie.m_value + temps_dynamique_population*PAS*(REPRO*(1 - Proie.m_value/PORTAGE));
+    // Proie.m_value = Proie.m_value + temps_dynamique_population*PAS*(REPRO*(1 - Proie.m_value/PORTAGE));
 }
 
 
@@ -489,11 +501,12 @@ void Graph::update()
     // Dynamique des populations
     for (auto &elt : m_vertices)
     {
+        cmp ++;
+        std::cout << "Indice sommet " <<  cmp << std::endl;
         Dynamique_pop(elt.second);
         // std::cout << "Population du sommet [] " << i << " : "<< m_vertices[i].m_value << std::endl;
         std::cout << "Population du sommet " <<  cmp << " "<< elt.second.m_value << std::endl;
         std::cout << "--------------------------------------" << std::endl;
-        cmp ++;
 
     }
 
