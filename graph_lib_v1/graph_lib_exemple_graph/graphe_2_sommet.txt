@@ -1,0 +1,16 @@
+15
+0 30.0 400 550 user.jpg
+1 60.0 100 450 info.jpg
+2 50.0 400 450 data.jpg
+3 0.0 800 450 metadata.jpg
+4 100.0 100 240 television.jpg
+5 0.0 400 240 smartphone.jpg
+6 0.0 800 240 frigo.jpg
+7 0.0 100 150 RS.jpg
+8 10.0 350 150 tracker.jpg
+9 30.0 650 150 position.jpg
+10 60.0 800 150 cookie.jpg
+11 50.0 100 0  cambridge.jpg
+12 0.0 350 0 ecole.jpg
+13 5.0 650 0 bank.jpg
+14 10.0 800 0 gov.jpg

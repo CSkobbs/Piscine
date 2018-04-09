@@ -27,11 +27,11 @@ int main()
     // Construction des 3 graphes
     g.make_graphe("graphe_1_sommet.txt","graphe_1_arete.txt");
 
-    h.make_graphe("graphe_1_sommet.txt","graphe_1_arete.txt");
+    h.make_graphe("graphe_2_sommet.txt","graphe_2_arete.txt");
 
     b.make_graphe("graphe_3_sommet.txt","graphe_3_arete.txt");
 
-    g.trajan();
+    // g.trajan();
 
     /// Vous gardez la main sur la "boucle de jeu"
     /// ( contrairement à des frameworks plus avancés )

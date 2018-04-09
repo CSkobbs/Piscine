@@ -426,7 +426,7 @@ void Graph::Recherchepreda(Vertex proie,std::vector<int> & coeff,std::vector<int
                         {
 
                             // Condition pour savoir si prédésseur
-                            
+
                             // Ajout des coefficients de prédation des prédateurs
                             coeff.push_back(m_edges[i].m_weight);
                             // Ajout de la valeur du sommet prédésseurs
@@ -635,6 +635,7 @@ Traduction du pseudo code
 void Graph::connexite(const int vertex_index) ///Prends les numero de sommet en parametre
 {
     auto& sommet( m_vertices [vertex_index]);
+    int m_tarjan_index = 0;
 
     // Initialisation de l'algo
     sommet.m_tarjan_index = m_tarjan_index;
@@ -683,7 +684,7 @@ void Graph::connexite(const int vertex_index) ///Prends les numero de sommet en 
 
 void Graph::tarjan()
 {
-    m_tarjan_index = 0;
+    int m_tarjan_index = 0;
     m_trajan_vect.clear(); ///Pour que le tableau soit vide
     for (auto &elt : m_vertices) ///Parcours des soemmets pour initialiser tout les sommets avec les valeurs de l'algo
     {
@@ -695,7 +696,7 @@ void Graph::tarjan()
         auto& sommet( elt.second );
         if ( sommet.m_tarjan_index == -1) ///Toujours vrai, on test alors la forte connexite
         {
-            fortement_connexe(elt.first);
+            connexite(elt.first);
         }
     }
 }

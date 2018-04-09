@@ -170,6 +170,10 @@ class Vertex
         /// Voir l'implémentation Graph::update dans le .cpp
         void pre_update();
         void post_update();
+
+        // trajan
+        void tarjan_init(){m_tarjan_index = -1, m_tarjan_lowlink = -1, m_tarjan_on_stack = false; } ///Pour initialiser l'algo de Tarjan
+
 };
 
 
