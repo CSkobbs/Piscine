@@ -119,6 +119,7 @@ class VertexInterface
         // Le constructeur met en place les éléments de l'interface
         // voir l'implémentation dans le .cpp
         VertexInterface(int idx, int x, int y, std::string pic_name="", int pic_idx=0);
+
 };
 
 
@@ -149,6 +150,14 @@ class Vertex
         // VertexInterface * m_interface = nullptr;
 
 
+        ///Declaration des variables pour l'algorithme de Tarjan
+        int m_tarjan_index; 
+        int m_tarjan_lowlink;
+        bool m_tarjan_on_stack;
+
+
+
+
     public:
 
         /// Les constructeurs sont à compléter selon vos besoin...
@@ -161,7 +170,18 @@ class Vertex
         /// Voir l'implémentation Graph::update dans le .cpp
         void pre_update();
         void post_update();
+
+        // Addition et suppression de vecteur
+        bool is_over_sommet() { return m_interface->m_top_box.is_mouse_over(); } ///Pour savoir si la souris est sur un sommet
+        void remove_from(grman::Widget& x) { x.remove_child(m_interface->m_top_box); } ///Pour enlever un sommet de l'interface graphique
+        void add_to(grman::Widget& x) { x.add_child(m_interface->m_top_box); } ///Pour rajouter un sommet a l'interface graphique
+
+
+        // trajan
+        void tarjan_init(){m_tarjan_index = -1, m_tarjan_lowlink = -1, m_tarjan_on_stack = false; } ///Pour initialiser l'algo de Tarjan
+
 };
+
 
 
 
@@ -235,6 +255,10 @@ class Edge
         /// Voir l'implémentation Graph::update dans le .cpp
         void pre_update();
         void post_update();
+
+        void remove_from(grman::Widget& x) { x.remove_child(m_interface->m_top_edge); } ///Fonction pour enlever les aretes de l'interface
+        void add_to(grman::Widget& x) { x.add_child(m_interface->m_top_edge); } ///Fonction pour rajouter les aretes a l'interface graphique
+
 };
 
 
@@ -263,6 +287,22 @@ class GraphInterface
         /// Dans cette boite seront ajoutés des boutons de contrôle etc...
         grman::WidgetBox m_tool_box;
 
+        /// Utiliser une top_box de type WidgetBox pour encapsuler
+        /// tous les éléments de l'interface associés à votre objet
+        //grman::WidgetBox m_top_box;
+
+        /// Les Widgets qui constitueront l'interface de l'objet
+
+        grman::WidgetBox m_boite_boutons;    // Sera la boite à boutons en bas
+        grman::WidgetButton m_bouton1;       // Sera le bouton pour sauvegarder
+        grman::WidgetText m_bouton1_label;   // Le texte sauver
+        grman::WidgetButton m_bouton2;       // Sera le bouton pour charger
+        grman::WidgetText m_bouton2_label;  // Le texte charger
+        grman::WidgetButton m_bouton3;       // Sera le bouton pour ajouter
+        grman::WidgetText m_bouton3_label;   // Le texte ajouter
+        grman::WidgetButton m_bouton4;       // Sera le bouton pour supprimer
+        grman::WidgetText m_bouton4_label;  // Le texte supprimer
+
 
         // A compléter éventuellement par des widgets de décoration ou
         // d'édition (boutons ajouter/enlever ...)
@@ -288,8 +328,18 @@ class Graph
         /// le POINTEUR sur l'interface associée, nullptr -> pas d'interface
         std::shared_ptr<GraphInterface> m_interface = nullptr;
 
+        ///Variables pour ajout et suppression
+        int m_nb_aretes;
+        int m_nbr_img;
+        std::vector<int> m_del_vertices;
+
+        // variables pour algo de trajan
+        int m_tarjan_index;
+
+        std::vector<int>m_tarjan_vect;
 
     public:
+
 
         /// Les constructeurs sont à compléter selon vos besoin...
         /// Ici on ne donne qu'un seul constructeur qui peut utiliser une interface
@@ -302,7 +352,7 @@ class Graph
         /// Méthode spéciale qui construit du graphe
         /// Voir implémentation dans le .cpp
         /// Cette méthode fait appel aux deux méthodes de construction avec le nom des fichiers nécessaires
-        void make_example();
+        // void make_example();
 
         void make_graphe(const std::string& vertex, const std::string& edge);
 
@@ -311,13 +361,69 @@ class Graph
         void remplissage_edge(const std::string& nom_fichier);
 
         //Méthode de remplissage du fichier edge.txt
-        void ecriture_vertex(const std::string& nom_fichier);
         void ecriture_edge(const std::string& nom_fichier);
+        void ecriture_vertex(const std::string& nom_fichier);
+
+        void set_nbr_arcs (int nbr_arcs) {m_nb_aretes=nbr_arcs;}
+        int get_nbr_arcs(){return m_nb_aretes;}
+        void set_nbr_img (int nbr_img) {m_nbr_img=nbr_img;}
+        int get_nbr_img(){return m_nbr_img;}
+
+        // Ajout et suppression
+        void add_vertex();
+        void del_vertex(int i);
 
 
         /// La méthode update à appeler dans la boucle de jeu pour les graphes avec interface
         void update();
+
+        // fonctions alog de tarjan
+        void parcours(const int vertex_index);
+        void tarjan();
+
+        /// dynamiques des population
+        void Recherchepreda(Vertex proie,std::vector<int> & coeff,std::vector<int> & pop);
+        void Dynamique_pop(); 
+
+
+
+};
+/*
+class Thing {
+
+    private :
+        /// Utiliser une top_box de type WidgetBox pour encapsuler
+        /// tous les éléments de l'interface associés à votre objet
+        grman::WidgetBox m_top_box;
+
+        /// Les Widgets qui constitueront l'interface de l'objet
+
+        grman::WidgetBox m_boite_boutons;    // Sera la boite à boutons en bas
+        grman::WidgetButton m_bouton1;       // Sera le bouton pour sauvegarder
+        grman::WidgetText m_bouton1_label;   // Le texte sauver
+        grman::WidgetButton m_bouton2;       // Sera le bouton pour charger
+        grman::WidgetText m_bouton2_label;  // Le texte charger
+        grman::WidgetButton m_bouton3;       // Sera le bouton pour ajouter
+        grman::WidgetText m_bouton3_label;   // Le texte ajouter
+        grman::WidgetButton m_bouton4;       // Sera le bouton pour supprimer
+        grman::WidgetText m_bouton4_label;  // Le texte supprimer
+
+    public :
+
+        /// Le constructeur de la classe (pas forcément par défaut !)
+        /// initialise les données des widgets, place la hiérarchie des sous-cadres etc...
+        Thing();
+
+        /// Une méthode "update" de la classe doit être appelée dans la boucle de jeu
+        /// et cette méthode doit propager l'appel à update sur les widgets contenus...
+        /// Cette méthode fait le lien entre l'interface, les événements, et les conséquences
+        //  ( Cette méthode pourrait s'appeler autrement, avoir des paramètres... )
+        void update();
+
+        /// On a des allocations dynamiques dans m_dynaclowns => à nettoyer dans le destructeur
+        ~Thing();
+
 };
 
-
+*/
 #endif // GRAPH_H_INCLUDED

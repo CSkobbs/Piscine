@@ -38,8 +38,13 @@
 			<Add library="jpgalleg" />
 			<Add library="alleg44.dll" />
 		</Linker>
+		<Unit filename="coords.h" />
+		<Unit filename="dynamique.cpp">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
 		<Unit filename="graph.cpp" />
 		<Unit filename="graph.h" />
+		<Unit filename="grman.h" />
 		<Unit filename="grman/coords.cpp" />
 		<Unit filename="grman/coords.h" />
 		<Unit filename="grman/grman.cpp" />
@@ -47,9 +52,11 @@
 		<Unit filename="grman/grman_couleurs.h" />
 		<Unit filename="grman/widget.cpp" />
 		<Unit filename="grman/widget.h" />
+		<Unit filename="grman_couleurs.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="menu.cpp" />
 		<Unit filename="menu.h" />
+		<Unit filename="widget.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />

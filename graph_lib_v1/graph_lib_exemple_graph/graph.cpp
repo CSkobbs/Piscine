@@ -1,11 +1,39 @@
 #include "graph.h"
 #include <fstream>
 
+/*************************************************
+        CONSTANTES DYNAMIQUES DE POPULATIONS
+***************************************************/
+#ifndef REPRO
+#define REPRO 5
+#endif
+
+// CapacitÃ© de portage de l'environnement : facteur K dans le cdc
+#ifndef PORTAGE
+#define PORTAGE 50
+#endif
+
+#ifndef PAS
+#define PAS 0.001
+#endif
+
+// EfficacitÃ© des prÃ©dateurs
+#ifndef PREDATION
+#define PREDATION 0.5
+#endif
+
+// Variable globale de temps
+extern int temps_dynamique_population;
+
+
+
 /***************************************************
                     VERTEX
 ****************************************************/
 
-/// Le constructeur met en place les éléments de l'interface
+
+
+/// Le constructeur met en place les ï¿½lï¿½ments de l'interface
 VertexInterface::VertexInterface(int idx, int x, int y, std::string pic_name, int pic_idx)
 {
     // La boite englobante
@@ -13,9 +41,9 @@ VertexInterface::VertexInterface(int idx, int x, int y, std::string pic_name, in
     m_top_box.set_dim(130, 100);
     m_top_box.set_moveable();
 
-    // Le slider de réglage de valeur
+    // Le slider de rï¿½glage de valeur
     m_top_box.add_child( m_slider_value );
-    m_slider_value.set_range(0.0 , 100.0); // Valeurs arbitraires, à adapter...
+    m_slider_value.set_range(0.0, 100.0);  // Valeurs arbitraires, ï¿½ adapter...
     m_slider_value.set_dim(20,80);
     m_slider_value.set_gravity_xy(grman::GravityX::Left, grman::GravityY::Up);
 
@@ -43,37 +71,35 @@ VertexInterface::VertexInterface(int idx, int x, int y, std::string pic_name, in
 }
 
 
-/// Gestion du Vertex avant l'appel à l'interface
+/// Gestion du Vertex avant l'appel ï¿½ l'interface
 void Vertex::pre_update()
 {
     if (!m_interface)
         return;
-
-    /// Copier la valeur locale de la donnée m_value vers le slider associé
+    /// Copier la valeur locale de la donnï¿½e m_value vers le slider associï¿½
     m_interface->m_slider_value.set_value(m_value);
 
-    /// Copier la valeur locale de la donnée m_value vers le label sous le slider
-    m_interface->m_label_value.set_message( std::to_string( (int)m_value) );
+    /// Copier la valeur locale de la donnï¿½e m_value vers le label sous le slider
+    m_interface->m_label_value.set_message( std::to_string( (int)m_value));
 }
 
 
-/// Gestion du Vertex après l'appel à l'interface
+/// Gestion du Vertex aprï¿½s l'appel ï¿½ l'interface
 void Vertex::post_update()
 {
     if (!m_interface)
         return;
 
-    /// Reprendre la valeur du slider dans la donnée m_value locale
+    /// Reprendre la valeur du slider dans la donnï¿½e m_value locale
     m_value = m_interface->m_slider_value.get_value();
 }
-
 
 
 /***************************************************
                     EDGE
 ****************************************************/
 
-/// Le constructeur met en place les éléments de l'interface
+/// Le constructeur met en place les ï¿½lï¿½ments de l'interface
 EdgeInterface::EdgeInterface(Vertex& from, Vertex& to)
 {
     // Le WidgetEdge de l'interface de l'arc
@@ -86,14 +112,14 @@ EdgeInterface::EdgeInterface(Vertex& from, Vertex& to)
     m_top_edge.attach_to(to.m_interface->m_top_box);
     m_top_edge.reset_arrow_with_bullet();
 
-    // Une boite pour englober les widgets de réglage associés
+    // Une boite pour englober les widgets de rï¿½glage associï¿½s
     m_top_edge.add_child(m_box_edge);
     m_box_edge.set_dim(24,60);
     m_box_edge.set_bg_color(BLANCBLEU);
 
-    // Le slider de réglage de valeur
+    // Le slider de rï¿½glage de valeur
     m_box_edge.add_child( m_slider_weight );
-    m_slider_weight.set_range(0.0 , 100.0); // Valeurs arbitraires, à adapter...
+    m_slider_weight.set_range(0.0, 100.0);  // Valeurs arbitraires, ï¿½ adapter...
     m_slider_weight.set_dim(16,40);
     m_slider_weight.set_gravity_y(grman::GravityY::Up);
 
@@ -104,26 +130,26 @@ EdgeInterface::EdgeInterface(Vertex& from, Vertex& to)
 }
 
 
-/// Gestion du Edge avant l'appel à l'interface
+/// Gestion du Edge avant l'appel ï¿½ l'interface
 void Edge::pre_update()
 {
     if (!m_interface)
         return;
 
-    /// Copier la valeur locale de la donnée m_weight vers le slider associé
+    /// Copier la valeur locale de la donnï¿½e m_weight vers le slider associï¿½
     m_interface->m_slider_weight.set_value(m_weight);
 
-    /// Copier la valeur locale de la donnée m_weight vers le label sous le slider
+    /// Copier la valeur locale de la donnï¿½e m_weight vers le label sous le slider
     m_interface->m_label_weight.set_message( std::to_string( (int)m_weight ) );
 }
 
-/// Gestion du Edge après l'appel à l'interface
+/// Gestion du Edge aprï¿½s l'appel ï¿½ l'interface
 void Edge::post_update()
 {
     if (!m_interface)
         return;
 
-    /// Reprendre la valeur du slider dans la donnée m_weight locale
+    /// Reprendre la valeur du slider dans la donnï¿½e m_weight locale
     m_weight = m_interface->m_slider_weight.get_value();
 }
 
@@ -133,11 +159,11 @@ void Edge::post_update()
                     GRAPH
 ****************************************************/
 
-/// Ici le constructeur se contente de préparer un cadre d'accueil des
-/// éléments qui seront ensuite ajoutés lors de la mise ne place du Graphe
+/// Ici le constructeur se contente de prï¿½parer un cadre d'accueil des
+/// ï¿½lï¿½ments qui seront ensuite ajoutï¿½s lors de la mise ne place du Graphe
 GraphInterface::GraphInterface(int x, int y, int w, int h)
 {
-    m_top_box.set_dim(1000,740);
+    m_top_box.set_dim(1100,1100);
     m_top_box.set_gravity_xy(grman::GravityX::Right, grman::GravityY::Up);
 
     m_top_box.add_child(m_tool_box);
@@ -146,50 +172,110 @@ GraphInterface::GraphInterface(int x, int y, int w, int h)
     m_tool_box.set_bg_color(BLANCBLEU);
 
     m_top_box.add_child(m_main_box);
-    m_main_box.set_dim(908,720);
+    m_main_box.set_dim(1100,1100);
     m_main_box.set_gravity_xy(grman::GravityX::Right, grman::GravityY::Up);
     m_main_box.set_bg_color(BLANCJAUNE);
+
+    /// Le cadre d'ensemble de l'interface; x y coin sup. gauche, largeur, hauteur
+    /// Le fond sera gris clair et on pourra le bouger Ã  la souris (drag & drop)
+    m_top_box.set_frame(0, 0, 1025,800);
+    m_top_box.set_bg_color(GRISCLAIR);
+
+    /// Les liens sont ajoutÃ©s en 1er pour que les autres Ã©lÃ©ments soient affichÃ©s au dessus
+    m_top_box.add_child( m_boite_boutons );
+    m_boite_boutons.set_frame(0,700,1025,100);
+    m_boite_boutons.set_bg_color(BLANC);
+    //Bouton 1
+    m_boite_boutons.add_child(m_bouton1);
+    m_bouton1.set_frame(0,0,255,100);
+    m_bouton1.set_bg_color(ROSE);
+    m_bouton1.add_child(m_bouton1_label);
+    m_bouton1_label.set_message("Sauver");
+    //Bouton 2
+    m_boite_boutons.add_child(m_bouton2);
+    m_bouton2.set_frame(255,0,255,100);
+    m_bouton2.set_bg_color(ROSE);
+    m_bouton2.add_child(m_bouton2_label);
+    m_bouton2_label.set_message("Changer");
+    //Bouton 3
+    m_boite_boutons.add_child(m_bouton3);
+    m_bouton3.set_frame(510,0,255,100);
+    m_bouton3.set_bg_color(ROSE);
+    m_bouton3.add_child(m_bouton3_label);
+    m_bouton3_label.set_message("Ajouter");
+    //Bouton 4
+    m_boite_boutons.add_child(m_bouton4);
+    m_bouton4.set_frame(765,0,255,100);
+    m_bouton4.set_bg_color(ROSE);
+    m_bouton4.add_child(m_bouton4_label);
+    m_bouton4_label.set_message("Supprimer");
 }
 
 
-/// Méthode spéciale qui construit un graphe arbitraire (démo)
-/// Cette méthode est à enlever et remplacer par un système
+/// Mï¿½thode spï¿½ciale qui construit un graphe arbitraire (dï¿½mo)
+/// Cette mï¿½thode est ï¿½ enlever et remplacer par un systï¿½me
 /// de chargement de fichiers par exemple.
-/// Bien sûr on ne veut pas que vos graphes soient construits
-/// "à la main" dans le code comme ça.
-void Graph::make_example()
+/// Bien sï¿½r on ne veut pas que vos graphes soient construits
+/// "ï¿½ la main" dans le code comme ï¿½a.
+/*void Graph::make_example()
 {
-    m_interface = std::make_shared<GraphInterface>(50, 0, 750, 600);
-    // La ligne précédente est en gros équivalente à :
+    m_interface = std::make_shared<GraphInterface>(0, 0, 800, 600);
+    // La ligne prï¿½cï¿½dente est en gros ï¿½quivalente ï¿½ :
     // m_interface = new GraphInterface(50, 0, 750, 600);
 
-    /// Les sommets doivent être définis avant les arcs
+    /// Les sommets doivent ï¿½tre dï¿½finis avant les arcs
     // Ajouter le sommet d'indice 0 de valeur 30 en x=200 et y=100 avec l'image clown1.jpg etc...
-    add_interfaced_vertex(0, 30.0, 200, 100, "clown1.jpg");
-    add_interfaced_vertex(1, 60.0, 400, 100, "clown2.jpg");
-    add_interfaced_vertex(2,  50.0, 200, 300, "clown3.jpg");
-    add_interfaced_vertex(3,  0.0, 400, 300, "clown4.jpg");
-    add_interfaced_vertex(4,  100.0, 600, 300, "clown5.jpg");
-    add_interfaced_vertex(5,  0.0, 100, 500, "bad_clowns_xx3xx.jpg", 0);
-    add_interfaced_vertex(6,  0.0, 300, 500, "bad_clowns_xx3xx.jpg", 1);
-    add_interfaced_vertex(7,  0.0, 500, 500, "bad_clowns_xx3xx.jpg", 2);
-    add_interfaced_vertex(8,  10.0, 10, 50, "sable.jpg");
+    add_interfaced_vertex(0, 30.0, 400, 450, "carriere.jpg");
+    add_interfaced_vertex(1, 60.0, 200, 350, "carbonate.jpg");
+    add_interfaced_vertex(2,  50.0, 300, 350, "sable.jpg");
+    add_interfaced_vertex(3,  0.0, 500, 350, "calcaire.jpg");
+    add_interfaced_vertex(4,  100.0, 700, 350, "granulat.jpg");
+    add_interfaced_vertex(5,  0.0, 100, 275, "calcin.jpg");
+    add_interfaced_vertex(6,  0.0, 300, 200, "verre.jpg");
+    add_interfaced_vertex(7,  0.0, 500, 200, "ciment.jpg");
+    add_interfaced_vertex(8,  10.0, 700, 200, "goudron.jpg");
+    add_interfaced_vertex(9, 30.0, 100, 100, "erosion.jpg");
+    add_interfaced_vertex(10, 60.0, 250, 50, "recyclage.jpg");
+    add_interfaced_vertex(11,  50.0, 500, 75, "batiment.jpg");
+    add_interfaced_vertex(12,  0.0, 700, 75, "route.jpg");
 
 
 
-    /// Les arcs doivent être définis entre des sommets qui existent !
+
+    /// Les arcs doivent ï¿½tre dï¿½finis entre des sommets qui existent !
     // AJouter l'arc d'indice 0, allant du sommet 1 au sommet 2 de poids 50 etc...
-    add_interfaced_edge(0, 1, 2, 50.0);
-    add_interfaced_edge(1, 0, 1, 50.0);
-    add_interfaced_edge(2, 1, 3, 75.0);
-    add_interfaced_edge(3, 4, 1, 25.0);
-    add_interfaced_edge(4, 6, 3, 25.0);
-    add_interfaced_edge(5, 7, 3, 25.0);
-    add_interfaced_edge(6, 3, 4, 0.0);
-    add_interfaced_edge(7, 2, 0, 100.0);
-    add_interfaced_edge(8, 5, 2, 20.0);
-    add_interfaced_edge(9, 3, 7, 80.0);
-}
+    add_interfaced_edge(0, 0, 1, 50.0);
+    add_interfaced_edge(1, 0, 2, 50.0);
+    add_interfaced_edge(2, 0, 3, 50.0);
+    add_interfaced_edge(3, 0, 4, 75.0);
+
+    add_interfaced_edge(4, 1, 6, 25.0);
+
+    add_interfaced_edge(5, 2, 6, 25.0);
+    add_interfaced_edge(6, 2, 7, 25.0);
+
+    add_interfaced_edge(7, 3, 6, 0.0);
+    add_interfaced_edge(8, 3, 7, 100.0);
+
+    add_interfaced_edge(9, 4, 8, 20.0);
+
+    add_interfaced_edge(10, 5, 6, 80.0);
+
+    add_interfaced_edge(11, 6, 10, 50.0);
+    add_interfaced_edge(12, 6, 11, 50.0);
+
+    add_interfaced_edge(13, 7, 11, 50.0);
+
+    add_interfaced_edge(14, 8, 12, 75.0);
+
+    add_interfaced_edge(15, 9, 0, 25.0);
+    add_interfaced_edge(16, 9, 11, 25.0);
+
+    add_interfaced_edge(17, 10, 4, 25.0);
+    add_interfaced_edge(18, 10, 5, 0.0);
+
+    add_interfaced_edge(19, 11, 10, 100.0);
+}*/
 
 // Sous programme de construction des graphes
 void Graph::make_graphe(const std::string& vertex, const std::string& edge)
@@ -201,8 +287,9 @@ void Graph::make_graphe(const std::string& vertex, const std::string& edge)
 }
 
 // Construction du graphe par lecture de fichier
-// Par méthode chargement de fichier : remplissage_vertex
-void Graph::remplissage_vertex(const std::string& nom_fichier){
+// Par mï¿½thode chargement de fichier : remplissage_vertex
+void Graph::remplissage_vertex(const std::string& nom_fichier)
+{
     // variables temp pour le remplissage de vertex
     int ordre, indice, posx, posy;
     float valeur;
@@ -217,7 +304,7 @@ void Graph::remplissage_vertex(const std::string& nom_fichier){
         fic >> ordre;
         for (int i = 0; i < ordre; ++i)
         {
-            // Initialisation des variables locales à chaque tour de boucle pour éviter de construire le mauvais sommet
+            // Initialisation des variables locales ï¿½ chaque tour de boucle pour ï¿½viter de construire le mauvais sommet
             indice = 0, valeur = 0.0, posx = 0, posy = 0, nom_image = "";
             fic >> indice >> valeur >> posx >> posy >> nom_image ;
             add_interfaced_vertex(indice,valeur,posx,posy,nom_image);
@@ -228,7 +315,8 @@ void Graph::remplissage_vertex(const std::string& nom_fichier){
 
 // Construction des aretes par lecture de fichier
 
-void Graph::remplissage_edge(const std::string& nom_fichier){
+void Graph::remplissage_edge(const std::string& nom_fichier)
+{
 
     // variables temp pour le remplissage de edges
     int ordre, indice, sommet1, sommet2;
@@ -243,7 +331,7 @@ void Graph::remplissage_edge(const std::string& nom_fichier){
         fic >> ordre;
         for (int i = 0; i < ordre; ++i)
         {
-            // Initialisation des variables locales à chaque tour de boucle pour éviter de construire la mauvaise aretes
+            // Initialisation des variables locales ï¿½ chaque tour de boucle pour ï¿½viter de construire la mauvaise aretes
             indice = 0, sommet1 = 0, sommet2 = 0, poids = 0.0 ;
             fic >> indice >> sommet1 >> sommet2 >> poids ;
             add_interfaced_edge(indice,sommet1,sommet2,poids);
@@ -251,36 +339,11 @@ void Graph::remplissage_edge(const std::string& nom_fichier){
     }
 
 }
-// Méthode d'écriture des sommets(vertex) dans le fichier de destination
-// la méthode capture les valeurs des sommets lors de la fin de la boucle
-void Graph::ecriture_vertex(const std::string& nom_fichier){
 
-    // variables temp pour le remplissage de edges
-    // int ordre, indice, sommet1, sommet2, cmp = 0;
-    // float poids;
-    int cmp = 0;
-
-    std::ofstream fic(nom_fichier.c_str());
-    if ( !fic.is_open() )
-        throw "Probleme ouverture fichier !";
-    /// Construction du vecteur d'aretes
-    if ( fic.is_open())
-    {
-        fic << m_vertices.size() << std::endl;
-        for (auto it = m_vertices.begin(); it!=m_vertices.end(); ++it){
-            // récupération des valeurs du sommet nécessaires à la construction de l'interface
-            // et à la sauvegarde des positions lors de la fin du jeu
-            // voir si problème héritage lors de la récupération des coordonnées
-            fic << cmp << " " << it->second.m_value <<" "<< it->second.get_posx() << " " << it->second.get_posy() << std::endl;
-            cmp++;
-        }
-    }
-    fic.close();
-}
-
-// Méthode d'écriture des aretes dans le fichier de destination
-// la méthode capture les valeurs des aretes lors de la fin de la boucle
-void Graph::ecriture_edge(const std::string& nom_fichier){
+// Mï¿½thode d'ï¿½criture des aretes dans le fichier de destination
+// la mï¿½thode capture les valeurs des aretes lors de la fin de la boucle
+void Graph::ecriture_edge(const std::string & nom_fichier)
+{
 
     // variables temp pour le remplissage de edges
     // int ordre, indice, sommet1, sommet2, cmp = 0;
@@ -294,28 +357,265 @@ void Graph::ecriture_edge(const std::string& nom_fichier){
     if ( fic.is_open())
     {
         fic << m_edges.size() << std::endl;
-        for (auto it = m_edges.begin(); it!=m_edges.end(); ++it){
-            fic << cmp << " " << it->second.m_from <<" "<< it->second.m_to << " " << it->second.m_weight << std::endl;
+        for (auto it = m_edges.begin(); it!=m_edges.end(); ++it)
+        {
+            // rï¿½cupï¿½ration des valeurs du sommet nï¿½cessaires ï¿½ la construction de l'interface
+            // et ï¿½ la sauvegarde des positions lors de la fin du jeu
+            // voir si problï¿½me hï¿½ritage lors de la rï¿½cupï¿½ration des coordonnï¿½es
+            fic << cmp << " " << it->second.m_from << " " << it->second.m_to << " " << it->second.m_weight << std::endl;
             cmp++;
         }
     }
     fic.close();
 }
 
+// Mï¿½thode d'ï¿½criture des sommets(vertex) dans le fichier de destination
+// la mï¿½thode capture les valeurs des sommets lors de la fin de la boucle
+void Graph::ecriture_vertex(const std::string& nom_fichier)
+{
+
+    // variables temp pour le remplissage de edges
+    // int ordre, indice, sommet1, sommet2, cmp = 0;
+    // float poids;
+    int cmp = 0;
+
+    std::ofstream fic(nom_fichier.c_str());
+    if ( !fic.is_open() )
+        throw "Probleme ouverture fichier !";
+    /// Construction du vecteur d'aretes
+    if ( fic.is_open())
+    {
+        fic << m_vertices.size() << std::endl;
+        std::cout << m_vertices.size() << std::endl;
+        for (auto it = m_vertices.begin(); it!=m_vertices.end(); ++it)
+        {
+            // rï¿½cupï¿½ration des valeurs du sommet nï¿½cessaires ï¿½ la construction de l'interface
+            // et ï¿½ la sauvegarde des positions lors de la fin du jeu
+            // voir si problï¿½me hï¿½ritage lors de la rï¿½cupï¿½ration des coordonnï¿½es
+            fic << cmp << " " << it->second.m_value <<" "<< it->second.m_interface->m_top_box.get_posx() << " " << it->second.m_interface->m_top_box.get_posx() << " " << it->second.m_interface->m_img.get_pic_name() << std::endl;
+            cmp++;
+        }
+    }
+    fic.close();
+}
+
+/************************************************
+                Ajout et suppression
+*************************************************/
+void Graph::add_vertex()
+{
+    // Condition pour vÃ©rifier si sommet dÃ©jÃ  supprimÃ©
+    if ( !m_del_vertices.empty() )
+        {
+            const auto indice_sommet( m_del_vertices.back() );
+            auto& sommet( m_vertices[indice_sommet] );
+
+            m_del_vertices.pop_back();
+
+            sommet.add_to(m_interface->m_main_box);
+            std::cout << "Sommet ajoutÃ© " << std::endl;
+
+            for (const auto indice_arete : sommet.m_in)
+            {
+
+                m_edges[indice_arete].add_to( m_interface->m_main_box ); ///On rerajoute les aretes entrantes
+
+                std::cout << "Arete entrante ajoutÃ©e " << std::endl;
+            }
+            for (const auto indice_arete : sommet.m_out) ///On rerajoute les aretes sortantes
+            {
+                m_edges[indice_arete].add_to( m_interface->m_main_box );
+
+                std::cout << "Arete sortante ajoutÃ©e " << std::endl;
+            }
+        }
+        // m_add_mode = false; ///Pour finir, add mode est remis a false pour ne pas rajouter tous les sommets d'un coup
+}
+
+void Graph::del_vertex(int indice_sommet)
+{
+    auto & sommet(m_vertices[indice_sommet]);
+    for (const auto indice_arete : sommet.m_in) ///Pour effacer les aretes qui arrivent vers le sommet
+    {
+
+        m_edges[indice_arete].remove_from( m_interface->m_main_box ); ///On enleve ces aretes de l'interface graphique
+        std::cout << "Erased" << std::endl;
+        m_edges[indice_arete].m_interface->m_top_edge.reset_arrow_with_bullet();
+    }
+    for (const auto indice_arete : sommet.m_out) ///Pour effacer les aretes qui partent de ce sommet
+    {
+
+        m_edges[indice_arete].remove_from( m_interface->m_main_box );
+        std::cout << "Erased" << std::endl;
+        m_edges[indice_arete].m_interface->m_top_edge.reset_arrow_with_bullet();
+    }
+
+    m_vertices[indice_sommet].remove_from(m_interface->m_main_box); ///Enfin, on enleve le sommet de l'interface graphique
+    m_del_vertices.push_back( indice_sommet ); ///Cette ligne ajoute l'index du sommet a un vector de sommets supprimes, qui seront utiles pour le mode ajout
+    // m_vertices[indice_sommet].m_interface->m_img.remove_from(m_interface->m_main_box);
 
 
+}
+/*void Graph::del_vertex()
+{
+    for (auto &elt : m_vertices) ///Parcours des sommets
+        {
+            auto& sommet( elt.second ); ///C'est le sommet ( elt.second c'est le sommet )
 
-/// La méthode update à appeler dans la boucle de jeu pour les graphes avec interface
+            if ( sommet.is_over_sommet() ) ///Si la souris clique un sommet
+            {
+                const auto indice_sommet( elt.first ); ///c'est l'indice du sommet ( le elt.first c'est la cle de la map )
+
+                for (const auto indice_arete : sommet.m_in) ///Pour effacer les aretes qui arrivent vers le sommet
+                {
+
+                    m_edges[indice_arete].remove_from( m_interface->m_main_box ); ///On enleve ces aretes de l'interface graphique
+                    std::cout << "Erased" << std::endl;
+                    m_edges[indice_arete].m_interface->m_top_edge.reset_arrow_with_bullet();
+                }
+                for (const auto indice_arete : sommet.m_out) ///Pour effacer les aretes qui partent de ce sommet
+                {
+
+                    m_edges[indice_arete].remove_from( m_interface->m_main_box );
+                    std::cout << "Erased" << std::endl;
+                    m_edges[indice_arete].m_interface->m_top_edge.reset_arrow_with_bullet();
+
+                }
+
+                m_vertices[indice_sommet].remove_from(m_interface->m_main_box); ///Enfin, on enleve le sommet de l'interface graphique
+                m_del_vertices.push_back( indice_sommet ); ///Cette ligne ajoute l'index du sommet a un vector de sommets supprimes, qui seront utiles pour le mode ajout
+                m_vertices[indice_sommet].m_interface->m_img.remove_from(m_interface->m_main_box);
+
+
+                break;
+            }
+        }
+}*/
+
+/************************************************
+        DeuxiÃ¨me approche DYNAMIQUE : Graph
+
+    - la dynamique se fait au niveau du graph
+    - pour un accÃ¨s direct aux valeurs des prÃ©dÃ©cesseurs
+    - du sommet Ã  traiter
+**************************************************/
+// Les deux vecteurs sont symÃ©triques et de meme taille
+// un ajout d'un prÃ©dateur entraine l'ajout de sa population Ã  l'instant t
+// Pour que le modÃ¨le reste valide il faut que la dynamique soit
+// rafraichit tous les tours de boucles et doit Ãªtre gÃ©rer par un pas
+// suivant l'Ã©volution de la population
+
+/*void Graph::Recherchepreda(Vertex proie,std::vector<int> & coeff,std::vector<int> & pop)
+{
+    // Recherche des coefficient des prÃ©dateurs : poids des aretes des prÃ©decesseurs
+    for (int i = 0; i < m_edges.size(); ++i)
+    {
+        for (int j = 0; j < proie.m_in.size(); ++j)
+                {
+                    if (m_edges[i].m_to == proie.m_in[j])
+                        {
+
+                            // Condition pour savoir si prÃ©dÃ©sseur
+
+                            // Ajout des coefficients de prÃ©dation des prÃ©dateurs
+                            coeff.push_back(m_edges[i].m_weight);
+                            // Ajout de la valeur du sommet prÃ©dÃ©sseurs
+                            pop.push_back(m_vertices[i].m_value);
+                            // std::cout << "m_vertices[i].m_value "<< m_vertices[i].m_value << std::endl;
+
+                        }
+                }
+    }
+
+
+    // Recherche des populations de prÃ©dateurs : valeur des prÃ©dÃ©cesseurs
+}*/
+void Graph::Recherchepreda(Vertex proie,std::vector<int> & coeff,std::vector<int> & pop)
+{
+    // Recherche des coefficient des prÃ©dateurs : poids des aretes des prÃ©decesseurs
+    for(auto& arete : m_edges){
+        for(std::size_t i = 0; i<proie.m_in.size();i++)
+            // Condition pour savoir si prÃ©dÃ©sseur
+            if (arete.second.m_to == proie.m_in[i])
+            {
+                // Ajout des coefficients de prÃ©dation des prÃ©dateurs
+                coeff.push_back(arete.second.m_weight);
+                // Ajout de la valeur du sommet prÃ©dÃ©sseurs
+                pop.push_back(m_vertices[i].m_value);
+            }
+    }
+    // Recherche des populations de prÃ©dateurs : valeur des prÃ©dÃ©cesseurs
+}
+
+void Graph::Dynamique_pop()
+{
+    int Predation ;
+    std::vector<int> coeff_preda,pop_preda;
+    for(auto& Vertex : m_vertices)
+    {
+        // Calcul du coeff de prÃ©dation
+        Predation = 0;
+        coeff_preda.clear();
+        pop_preda.clear();
+
+        Recherchepreda(Vertex.second,coeff_preda,pop_preda);
+
+        for (std::size_t i = 0; i < coeff_preda.size(); ++i)
+        {
+            // recherche du coeff de prÃ©dation
+            // somme des differents coeff d'efficatitÃ© des prÃ©dateurs * nombre de prÃ©dateurs
+            // attention rÃ©cuperer les tailles de populations des autres prÃ©dateurs
+            Predation += coeff_preda[i]*pop_preda[i]*PREDATION;
+            
+        }
+        // Ajustement du facteur de prÃ©dation si il est trop grand
+        if (Predation > 100)
+        {
+            Predation = Predation/100;
+        }
+        // d'apres la formule du cours :
+        // ajouter le pas avec i dans les arguments de la fonction
+        // i compteur de boucle de jeu et non compteur lors du parcours du vecteur de prÃ©dÃ©cesseurs
+
+        // Avec PrÃ©dation
+        Vertex.second.m_value = Vertex.second.m_value + temps_dynamique_population*PAS*(REPRO*(1 - Vertex.second.m_value/PORTAGE) - Predation);
+        // Sans prÃ©dation
+        // Proie.m_value = Proie.m_value + temps_dynamique_population*PAS*(REPRO*(1 - Proie.m_value/PORTAGE));
+    }
+        
+
+}
+
+
+/// La mï¿½thode update ï¿½ appeler dans la boucle de jeu pour les graphes avec interface
 void Graph::update()
 {
     if (!m_interface)
         return;
 
+    // Dynamique des populations
+    Dynamique_pop();
+    
+
+    /*for (auto &elt : m_vertices)
+    {
+        // Dynamique
+        Dynamique_pop(elt.second);
+
+        // std::cout << "Population du sommet [] " << i << " : "<< m_vertices[i].m_value << std::endl;
+        // std::cout << "Population du sommet " <<  cmp << " "<< elt.second.m_value << std::endl;
+        // std::cout << "--------------------------------------" << std::endl;
+
+    }*/
+
     for (auto &elt : m_vertices)
         elt.second.pre_update();
 
+
+
     for (auto &elt : m_edges)
         elt.second.pre_update();
+
 
     m_interface->m_top_box.update();
 
@@ -325,9 +625,53 @@ void Graph::update()
     for (auto &elt : m_edges)
         elt.second.post_update();
 
+    if ( m_interface->m_bouton1.clicked() )
+    {
+        std::cout << "Sauvegarde du graphe" << std::endl;
+        ecriture_edge("last_edges.txt");
+        ecriture_vertex("last_vertex.txt");
+        //appeler la fonction sauvegarder
+    }
+
+    if ( m_interface->m_bouton2.clicked() )
+    {
+        std::cout << "Chargement" << std::endl;
+        //appeler la fonction charger
+
+        // g.make_graphe("graphe_1_sommet.txt","graphe_1_arete.txt");
+        // g.ecriture_edge("graphe_1_sommet_test.txt");
+        // g.ecriture_vertex("graphe_1_arete_test.txt");
+
+        // h.make_graphe("graphe_1_sommet.txt","graphe_1_arete.txt");
+        // h.ecriture_edge("graphe_1_sommet_test.txt");
+        // h.ecriture_vertex("graphe_1_arete_test.txt");
+
+        // b.make_graphe("graphe_3_sommet.txt","graphe_3_arete.txt");
+        // b.ecriture_edge("graphe_3_sommet_test.txt");
+        // b.ecriture_vertex("graphe_3_arete_test.txt");
+
+    }
+
+    if ( m_interface->m_bouton3.clicked() )
+    {
+        //appeler la fonction ajouter
+        std::cout << "Ajout d'un sommet" << std::endl;
+        add_vertex();
+    }
+
+    if ( m_interface->m_bouton4.clicked() )
+    {
+        //appeler la fonction supprimer
+        std::cout << "*******************************" << std::endl;
+        std::cout << "Entrer le sommet Ã  supprimer :" << std::endl;
+        int supp = 0;
+        std::cin >> supp;
+        del_vertex(supp);
+    }
+
 }
 
-/// Aide à l'ajout de sommets interfacés
+/// Aide ï¿½ l'ajout de sommets interfacï¿½s
 void Graph::add_interfaced_vertex(int idx, double value, int x, int y, std::string pic_name, int pic_idx )
 {
     if ( m_vertices.find(idx)!=m_vertices.end() )
@@ -335,7 +679,7 @@ void Graph::add_interfaced_vertex(int idx, double value, int x, int y, std::stri
         std::cerr << "Error adding vertex at idx=" << idx << " already used..." << std::endl;
         throw "Error adding vertex";
     }
-    // Création d'une interface de sommet
+    // Crï¿½ation d'une interface de sommet
     VertexInterface *vi = new VertexInterface(idx, x, y, pic_name, pic_idx);
     // Ajout de la top box de l'interface de sommet
     m_interface->m_main_box.add_child(vi->m_top_box);
@@ -343,7 +687,7 @@ void Graph::add_interfaced_vertex(int idx, double value, int x, int y, std::stri
     m_vertices[idx] = Vertex(value, vi);
 }
 
-/// Aide à l'ajout d'arcs interfacés
+/// Aide ï¿½ l'ajout d'arcs interfacï¿½s
 void Graph::add_interfaced_edge(int idx, int id_vert1, int id_vert2, double weight)
 {
     if ( m_edges.find(idx)!=m_edges.end() )
@@ -370,3 +714,87 @@ void Graph::add_interfaced_edge(int idx, int id_vert1, int id_vert2, double weig
 
 }
 
+
+
+/*******************************************************
+                    CONNEXITE
+Algo de trajan
+InspirÃ© du wiki sur algo de trajan
+Traduction du pseudo code
+********************************************************/
+
+void Graph::parcours(const int vertex_index) ///Prends les numero de sommet en parametre
+{
+    auto& sommet( m_vertices [vertex_index]);
+
+    // Initialisation de l'algo
+    sommet.m_tarjan_index = m_tarjan_index;
+    sommet.m_tarjan_lowlink = m_tarjan_index;
+    m_tarjan_index += 1;
+    m_tarjan_vect.push_back(vertex_index);
+    sommet.m_tarjan_on_stack = true;
+    for (const auto edge_idx : sommet.m_out)
+    {
+        const auto& arete( m_edges[edge_idx]);
+        auto& w( m_vertices[arete.m_to]);
+        if( w.m_tarjan_index == -1 )
+        {
+            parcours( arete.m_to);
+            sommet.m_tarjan_lowlink = std::min(sommet.m_tarjan_lowlink, w.m_tarjan_lowlink);
+        }
+        else if( w.m_tarjan_on_stack )
+        {
+            sommet.m_tarjan_lowlink = std::min(sommet.m_tarjan_lowlink, w.m_tarjan_index);
+        }
+    }
+    if( sommet.m_tarjan_lowlink == sommet.m_tarjan_index)
+    {
+        std::vector<int> liste_fortement_connexe;
+        while ( true )
+        {
+            const auto w_idx( m_tarjan_vect.back() );
+            auto& w( m_vertices[ w_idx ]);
+            m_tarjan_vect.pop_back();
+            w.m_tarjan_on_stack = false;
+            liste_fortement_connexe.push_back(w_idx);
+
+            if ( w_idx == vertex_index )
+            {
+                break;
+            }
+        }
+        std::cout << "                                      " << std::endl;
+        std::cout << "Composantes connexes : ";
+        for (std::size_t i = 0; i < liste_fortement_connexe.size(); ++i)
+        {
+            std::cout << liste_fortement_connexe[i]  << " --> ";
+        }
+        std::cout << std::endl;
+    }
+}
+
+void Graph::tarjan()
+{
+    m_tarjan_index = 0;
+
+    /// Neetoyage du vecteur de tarjan
+    m_tarjan_vect.clear();
+    // for (std::size_t i = 0; i < m_tarjan_vect.size(); ++i)
+    //     {
+    //         m_tarjan_vect[i].pop();
+    //     }
+
+    for (auto &elt : m_vertices) ///Parcours des soemmets pour initialiser tout les sommets avec les valeurs de l'algo
+    {
+        auto& sommet( elt.second );
+        sommet.tarjan_init();
+    }
+    for (auto &elt : m_vertices)
+    {
+        auto& sommet( elt.second );
+        if ( sommet.m_tarjan_index == -1) ///Toujours vrai, on test alors la forte connexite
+        {
+            parcours(elt.first);
+        }
+    }
+}

@@ -1,31 +1,9 @@
 #include "menu.h"
 
+// variable globale de temps pour lier l'évolution de la population au temps
+int temps_dynamique_population;
 
-
-/*------------------------------------------------*/
-/* Definition des fonction */
-
-void initAllegro()
-{
-    allegro_init();
-    install_keyboard();
-    install_mouse();
-
-
-    /*-------------------------------------------------------------*/
-
-    set_color_depth(desktop_color_depth());
-    if (set_gfx_mode(GFX_AUTODETECT_WINDOWED,800,600,0,0)!=0)
-    {
-        allegro_message("prb gfx mode");
-        allegro_exit();
-        exit(EXIT_FAILURE);
-    }
-}
-
-/*------------------------------------------------*/
-
-void menu(Graph G)
+void menu(Graph G, Graph H, Graph B)
 {
     BITMAP * buffer;
 
@@ -92,6 +70,8 @@ void menu(Graph G)
 
         else if(page_actuelle == 2)
         {
+            // reset du temps lors du retour au menu
+            temps_dynamique_population = 0;
             blit(fond, buffer,0, 0, 0, 0, SCREEN_W, SCREEN_H);
             draw_sprite(buffer, menu_page2[etat],0,0);
             if((key[KEY_DOWN]))
@@ -109,14 +89,21 @@ void menu(Graph G)
                     etat--;
             }
 
+
+
+
+
+
             if ((key[KEY_ENTER])&& (etat==1))
             {
 
                 while(!key[KEY_F])
                 {
-
+                    temps_dynamique_population ++;
                     G.update();
+
                     grman::mettre_a_jour();
+
 
                 }
 
@@ -125,14 +112,31 @@ void menu(Graph G)
             if ((key[KEY_ENTER])&& (etat==2))
             {
 
-                G.update();
+
+                while(!key[KEY_F])
+                {
+                    temps_dynamique_population ++;
+                    H.update();
+                    grman::mettre_a_jour();
+
+                }
             }
 
             if ((key[KEY_ENTER])&& (etat==3))
             {
 
-                G.update();
+
+                while(!key[KEY_F])
+                {
+
+                    temps_dynamique_population ++;
+                    B.update();
+                    grman::mettre_a_jour();
+
+                }
             }
+
+
             draw_sprite(screen, buffer,0,0);
 
             if (key[KEY_BACKSPACE])

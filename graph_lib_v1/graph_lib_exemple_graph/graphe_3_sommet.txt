@@ -1,0 +1,14 @@
+13
+0 30.0 400 450 carriere.jpg
+1 60.0 200 350 carbonate.jpg
+2 50.0 300 350 sable.jpg
+3 0.0 500 350 calcaire.jpg
+4 100.0 700 350 granulat.jpg
+5 0.0 100 275 calcin.jpg
+6 0.0 300 200 verre.jpg
+7 0.0 500 200 ciment.jpg
+8 10.0 700 200 goudron.jpg
+9 30.0 100 100 erosion.jpg
+10 60.0 250 50 recyclage.jpg
+11 50.0 500 75 batiment.jpg
+12 0.0 700 75 route.jpg
