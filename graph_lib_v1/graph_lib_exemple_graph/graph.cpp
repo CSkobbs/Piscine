@@ -625,53 +625,77 @@ void Graph::add_interfaced_edge(int idx, int id_vert1, int id_vert2, double weig
 
 
 
-/*void Graph::cliquer()
+/*******************************************************
+                    CONNEXITE
+Algo de trajan
+Inspiré du wiki sur algo de trajan
+Traduction du pseudo code
+********************************************************/
+
+void Graph::connexite(const int vertex_index) ///Prends les numero de sommet en parametre
 {
-    if ( m_bouton1.clicked() )
-    {
-        std::cout << "OK1" << std::endl;
-        //appeler la fonction sauvegarder
-    }
+    auto& sommet( m_vertices [vertex_index]);
 
-    if ( m_bouton2.clicked() )
+    // Initialisation de l'algo
+    sommet.m_tarjan_index = m_tarjan_index;
+    sommet.m_tarjan_lowlink = m_tarjan_index;
+    m_tarjan_index += 1;
+    m_trajan_vect.push_back(vertex_index);
+    sommet.m_tarjan_on_stack = true;
+    for (const auto edge_idx : sommet.m_out)
     {
-        std::cout << "OK2" << std::endl;
-        //appeler la fonction charger
+        const auto& arete( m_edges[edge_idx]);
+        auto& w( m_vertices[arete.m_to]);
+        if( w.m_tarjan_index == -1 )
+        {
+            connexite( arete.m_to );
+            sommet.m_tarjan_lowlink = std::min(sommet.m_tarjan_lowlink, w.m_tarjan_lowlink);
+        }
+        else if( w.m_tarjan_on_stack )
+        {
+            sommet.m_tarjan_lowlink = std::min(sommet.m_tarjan_lowlink, w.m_tarjan_index);
+        }
     }
-
-    if ( m_bouton3.clicked() )
+    if( sommet.m_tarjan_lowlink == sommet.m_tarjan_index)
     {
-        std::cout << "OK3" << std::endl;
-        //appeler la fonction ajouter
-    }
+        std::vector<int> liste_fortement_connexe;
+        while ( true )
+        {
+            const auto w_idx( m_trajan_vect.back() );
+            auto& w( m_vertices[ w_idx ]);
+            m_trajan_vect.pop_back();
+            w.m_tarjan_on_stack = false;
+            liste_fortement_connexe.push_back(w_idx);
 
-    if ( m_bouton4.clicked() )
-    {
-        std::cout << "OK4" << std::endl;
-        //appeler la fonction supprimer
+            if ( w_idx == vertex_index )
+            {
+                break;
+            }
+        }
+        std::cout << "Les composantes fortement connexes sont: ";
+        for (std::size_t i = 0; i < liste_fortement_connexe.size(); ++i)
+        {
+            std::cout << liste_fortement_connexe[i]  << " ";
+        }
+        std::cout << std::endl;
     }
 }
 
-/// Une méthode update de la classe doit être appelée dans la boucle de jeu
-/// et cette méthode doit propager l'appel à update sur les widgets contenus...
-/// Cette méthode fait le lien entre l'interface, les événements, et les conséquences
-void Thing::update()
+void Graph::tarjan()
 {
-
-    /// Si tous les widgets dépendants de l'objet sont dans une top box
-    /// alors ce seul appel suffit (la propagation d'updates se fait ensuite automatiquement)
-    m_top_box.update();
-
-    /// Utilisation d'un bouton pour déclencher un événement
-    /// L'accès à clicked() fait un reset : tant que le bouton n'est pas
-    /// à nouveau cliqué les futurs accès à clicked seront faux
-    /// ( Donc il faut appeler clicked() UNE FOIS ET UNE SEULE par update )
-
-
+    m_tarjan_index = 0;
+    m_trajan_vect.clear(); ///Pour que le tableau soit vide
+    for (auto &elt : m_vertices) ///Parcours des soemmets pour initialiser tout les sommets avec les valeurs de l'algo
+    {
+        auto& sommet( elt.second );
+        sommet.tarjan_init();
+    }
+    for (auto &elt : m_vertices)
+    {
+        auto& sommet( elt.second );
+        if ( sommet.m_tarjan_index == -1) ///Toujours vrai, on test alors la forte connexite
+        {
+            fortement_connexe(elt.first);
+        }
+    }
 }
-
-
-/// On a des allocations dynamiques dans m_dynaclowns => à nettoyer dans le destructeur
-Thing::~Thing()
-{}
-*/

@@ -150,6 +150,7 @@ class Vertex
         // VertexInterface * m_interface = nullptr;
 
 
+
     public:
 
         /// Les constructeurs sont à compléter selon vos besoin...
@@ -306,7 +307,12 @@ class Graph
         /// le POINTEUR sur l'interface associée, nullptr -> pas d'interface
         std::shared_ptr<GraphInterface> m_interface = nullptr;
 
+        // variables pour algo de trajan
+        int m_trajan_index;
+        std::vector<int>m_trajan_vect;
+
     public:
+
 
         /// Les constructeurs sont à compléter selon vos besoin...
         /// Ici on ne donne qu'un seul constructeur qui peut utiliser une interface
@@ -335,10 +341,15 @@ class Graph
         /// La méthode update à appeler dans la boucle de jeu pour les graphes avec interface
         void update();
 
+        // fonctions alog de trajan
+        void connexite(const int vertex_index);
+
 
         /// dynamiques des population
         void Recherchepreda(Vertex proie,std::vector<int> & coeff,std::vector<int> & pop);
         void Dynamique_pop(Vertex & Proie); 
+
+
 
 };
 /*
