@@ -632,16 +632,15 @@ Inspiré du wiki sur algo de trajan
 Traduction du pseudo code
 ********************************************************/
 
-void Graph::connexite(const int vertex_index) ///Prends les numero de sommet en parametre
+void Graph::parcours(const int vertex_index) ///Prends les numero de sommet en parametre
 {
     auto& sommet( m_vertices [vertex_index]);
-    int m_tarjan_index = 0;
 
     // Initialisation de l'algo
     sommet.m_tarjan_index = m_tarjan_index;
     sommet.m_tarjan_lowlink = m_tarjan_index;
     m_tarjan_index += 1;
-    m_trajan_vect.push_back(vertex_index);
+    m_tarjan_vect.push_back(vertex_index);
     sommet.m_tarjan_on_stack = true;
     for (const auto edge_idx : sommet.m_out)
     {
@@ -649,7 +648,7 @@ void Graph::connexite(const int vertex_index) ///Prends les numero de sommet en 
         auto& w( m_vertices[arete.m_to]);
         if( w.m_tarjan_index == -1 )
         {
-            connexite( arete.m_to );
+            parcours( arete.m_to);
             sommet.m_tarjan_lowlink = std::min(sommet.m_tarjan_lowlink, w.m_tarjan_lowlink);
         }
         else if( w.m_tarjan_on_stack )
@@ -662,9 +661,9 @@ void Graph::connexite(const int vertex_index) ///Prends les numero de sommet en 
         std::vector<int> liste_fortement_connexe;
         while ( true )
         {
-            const auto w_idx( m_trajan_vect.back() );
+            const auto w_idx( m_tarjan_vect.back() );
             auto& w( m_vertices[ w_idx ]);
-            m_trajan_vect.pop_back();
+            m_tarjan_vect.pop_back();
             w.m_tarjan_on_stack = false;
             liste_fortement_connexe.push_back(w_idx);
 
@@ -673,10 +672,11 @@ void Graph::connexite(const int vertex_index) ///Prends les numero de sommet en 
                 break;
             }
         }
-        std::cout << "Les composantes fortement connexes sont: ";
+        std::cout << "                                      " << std::endl;
+        std::cout << "Composantes connexes : ";
         for (std::size_t i = 0; i < liste_fortement_connexe.size(); ++i)
         {
-            std::cout << liste_fortement_connexe[i]  << " ";
+            std::cout << liste_fortement_connexe[i]  << " --> ";
         }
         std::cout << std::endl;
     }
@@ -684,8 +684,15 @@ void Graph::connexite(const int vertex_index) ///Prends les numero de sommet en 
 
 void Graph::tarjan()
 {
-    int m_tarjan_index = 0;
-    m_trajan_vect.clear(); ///Pour que le tableau soit vide
+    m_tarjan_index = 0;
+
+    /// Neetoyage du vecteur de tarjan
+    m_tarjan_vect.clear();
+    // for (std::size_t i = 0; i < m_tarjan_vect.size(); ++i)
+    //     {
+    //         m_tarjan_vect[i].pop();
+    //     }
+
     for (auto &elt : m_vertices) ///Parcours des soemmets pour initialiser tout les sommets avec les valeurs de l'algo
     {
         auto& sommet( elt.second );
@@ -696,7 +703,7 @@ void Graph::tarjan()
         auto& sommet( elt.second );
         if ( sommet.m_tarjan_index == -1) ///Toujours vrai, on test alors la forte connexite
         {
-            connexite(elt.first);
+            parcours(elt.first);
         }
     }
 }

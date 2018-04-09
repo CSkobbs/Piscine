@@ -31,7 +31,18 @@ int main()
 
     b.make_graphe("graphe_3_sommet.txt","graphe_3_arete.txt");
 
-    // g.trajan();
+    // Affichage de la connexité des graphes
+    std::cout << "---------------------------------"<< std::endl;
+    std::cout << " ETUDE CONNEXITE GRAPHE g --> "<< std::endl;
+    g.tarjan();
+
+    std::cout << "---------------------------------"<< std::endl;
+    std::cout << " ETUDE CONNEXITE GRAPHE h --> "<< std::endl;
+    h.tarjan();
+
+    std::cout << "---------------------------------"<< std::endl;
+    std::cout << " ETUDE CONNEXITE GRAPHE b --> "<< std::endl;
+    b.tarjan();
 
     /// Vous gardez la main sur la "boucle de jeu"
     /// ( contrairement à des frameworks plus avancés )

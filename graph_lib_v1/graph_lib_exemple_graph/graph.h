@@ -319,8 +319,9 @@ class Graph
         std::shared_ptr<GraphInterface> m_interface = nullptr;
 
         // variables pour algo de trajan
-        int m_trajan_index;
-        std::vector<int>m_trajan_vect;
+        int m_tarjan_index;
+
+        std::vector<int>m_tarjan_vect;
 
     public:
 
@@ -353,7 +354,7 @@ class Graph
         void update();
 
         // fonctions alog de trajan
-        void connexite(const int vertex_index);
+        void parcours(const int vertex_index);
         void tarjan();
 
 

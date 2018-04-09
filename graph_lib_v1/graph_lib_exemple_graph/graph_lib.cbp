@@ -39,6 +39,9 @@
 			<Add library="alleg44.dll" />
 		</Linker>
 		<Unit filename="coords.h" />
+		<Unit filename="dynamique.cpp">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
 		<Unit filename="graph.cpp" />
 		<Unit filename="graph.h" />
 		<Unit filename="grman.h" />
