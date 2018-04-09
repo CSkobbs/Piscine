@@ -1,9 +1,9 @@
-8
-0 50 398 398 tulipe.jpg
-1 50 798 798 coquelicot.jpg
-2 50 98 98 arrosoire.jpg
+14
+0 0 298 298 tulipe.jpg
+1 0 751 751 coquelicot.jpg
+2 50 75 75 arrosoire.jpg
 3 50 398 398 abeille.jpg
 4 50 798 798 bourdon.jpg
 5 50 98 98 soleil.jpg
-6 50 398 398 courgette.jpg
+6 0 398 398 courgette.jpg
 7 50 798 798 tomate.jpg

@@ -14,7 +14,7 @@
 #endif
 
 #ifndef PAS
-#define PAS 0.05
+#define PAS 0.001
 #endif
 
 // Efficacité des prédateurs
@@ -302,7 +302,6 @@ void Graph::remplissage_vertex(const std::string& nom_fichier)
     if ( fic.good())
     {
         fic >> ordre;
-        std::cout << "ordre : " << ordre << std::endl;
         for (int i = 0; i < ordre; ++i)
         {
             // Initialisation des variables locales � chaque tour de boucle pour �viter de construire le mauvais sommet
@@ -311,7 +310,6 @@ void Graph::remplissage_vertex(const std::string& nom_fichier)
             add_interfaced_vertex(indice,valeur,posx,posy,nom_image);
         }
     }
-    std::cout << "crea fichier : " << m_vertices.size() << std::endl;
 
 }
 
@@ -418,8 +416,8 @@ void Graph::ecriture_vertex(const std::string& nom_fichier)
 
 void Graph::Recherchepreda(Vertex proie,std::vector<int> & coeff,std::vector<int> & pop)
 {
-
     // Recherche des coefficient des prédateurs : poids des aretes des prédecesseurs
+    std::cout << "avant "<< m_vertices.size() << std::endl;
     for (int i = 0; i < m_edges.size(); ++i)
     {
         for (int j = 0; j < proie.m_in.size(); ++j)
@@ -428,15 +426,19 @@ void Graph::Recherchepreda(Vertex proie,std::vector<int> & coeff,std::vector<int
                         {
 
                             // Condition pour savoir si prédésseur
-
+                            
                             // Ajout des coefficients de prédation des prédateurs
                             coeff.push_back(m_edges[i].m_weight);
                             // Ajout de la valeur du sommet prédésseurs
                             pop.push_back(m_vertices[i].m_value);
+                            // std::cout << "m_vertices[i].m_value "<< m_vertices[i].m_value << std::endl;
 
                         }
                 }
     }
+    std::cout << "apres "<< m_vertices.size() << std::endl;
+
+
     // Recherche des populations de prédateurs : valeur des prédécesseurs
 
 }
