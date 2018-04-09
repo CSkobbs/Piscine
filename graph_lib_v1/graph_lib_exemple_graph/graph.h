@@ -150,6 +150,13 @@ class Vertex
         // VertexInterface * m_interface = nullptr;
 
 
+        ///Declaration des variables pour l'algorithme de Tarjan
+        int m_tarjan_index; 
+        int m_tarjan_lowlink;
+        bool m_tarjan_on_stack;
+
+
+
 
     public:
 
@@ -343,6 +350,8 @@ class Graph
 
         // fonctions alog de trajan
         void connexite(const int vertex_index);
+        void tarjan();
+
 
 
         /// dynamiques des population
