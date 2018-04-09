@@ -383,7 +383,7 @@ class Graph
 
         /// dynamiques des population
         void Recherchepreda(Vertex proie,std::vector<int> & coeff,std::vector<int> & pop);
-        void Dynamique_pop(Vertex & Proie); 
+        void Dynamique_pop(); 
 
 
 

@@ -505,10 +505,9 @@ void Graph::del_vertex(int indice_sommet)
 // rafraichit tous les tours de boucles et doit être gérer par un pas
 // suivant l'évolution de la population
 
-void Graph::Recherchepreda(Vertex proie,std::vector<int> & coeff,std::vector<int> & pop)
+/*void Graph::Recherchepreda(Vertex proie,std::vector<int> & coeff,std::vector<int> & pop)
 {
     // Recherche des coefficient des prédateurs : poids des aretes des prédecesseurs
-    std::cout << "avant "<< m_vertices.size() << std::endl;
     for (int i = 0; i < m_edges.size(); ++i)
     {
         for (int j = 0; j < proie.m_in.size(); ++j)
@@ -527,68 +526,78 @@ void Graph::Recherchepreda(Vertex proie,std::vector<int> & coeff,std::vector<int
                         }
                 }
     }
-    std::cout << "apres "<< m_vertices.size() << std::endl;
 
 
     // Recherche des populations de prédateurs : valeur des prédécesseurs
+}*/
+void Graph::Recherchepreda(Vertex proie,std::vector<int> & coeff,std::vector<int> & pop)
+{
+    // Recherche des coefficient des prédateurs : poids des aretes des prédecesseurs
+    for(auto& arete : m_edges){
+        for(std::size_t i = 0; i<proie.m_in.size();i++)
+            // Condition pour savoir si prédésseur
+            if (arete.second.m_to == proie.m_in[i])
+            {
+                // Ajout des coefficients de prédation des prédateurs
+                coeff.push_back(arete.second.m_weight);
+                // Ajout de la valeur du sommet prédésseurs
+                pop.push_back(m_vertices[i].m_value);
+            }
+    }
+    // Recherche des populations de prédateurs : valeur des prédécesseurs
 }
 
-void Graph::Dynamique_pop(Vertex & Proie)
+void Graph::Dynamique_pop()
 {
-    // Calcul du coeff de prédation
-    int Predation = 0;
+    int Predation ;
     std::vector<int> coeff_preda,pop_preda;
-
-    // Recherchepreda(Proie,coeff_preda,pop_preda);
-
-
-    for (int i = 0; i < coeff_preda.size(); ++i)
+    for(auto& Vertex : m_vertices)
     {
-        // recherche du coeff de prédation
-        // somme des differents coeff d'efficatité des prédateurs * nombre de prédateurs
-        // attention récuperer les tailles de populations des autres prédateurs
-        Predation += coeff_preda[i]*pop_preda[i]*PREDATION;
+        // Calcul du coeff de prédation
+        Predation = 0;
+        coeff_preda.clear();
+        pop_preda.clear();
+
+        Recherchepreda(Vertex.second,coeff_preda,pop_preda);
+
+        for (std::size_t i = 0; i < coeff_preda.size(); ++i)
+        {
+            // recherche du coeff de prédation
+            // somme des differents coeff d'efficatité des prédateurs * nombre de prédateurs
+            // attention récuperer les tailles de populations des autres prédateurs
+            Predation += coeff_preda[i]*pop_preda[i]*PREDATION;
+            
+        }
+        // Ajustement du facteur de prédation si il est trop grand
+        if (Predation > 100)
+        {
+            Predation = Predation/100;
+        }
+        // d'apres la formule du cours :
+        // ajouter le pas avec i dans les arguments de la fonction
+        // i compteur de boucle de jeu et non compteur lors du parcours du vecteur de prédécesseurs
+
+        // Avec Prédation
+        Vertex.second.m_value = Vertex.second.m_value + temps_dynamique_population*PAS*(REPRO*(1 - Vertex.second.m_value/PORTAGE) - Predation);
+        // Sans prédation
+        // Proie.m_value = Proie.m_value + temps_dynamique_population*PAS*(REPRO*(1 - Proie.m_value/PORTAGE));
     }
-    if (Predation > 100)
-    {
-        Predation = Predation/100;
-    }
+        
 
-
-    // for (int i = 0; i < coeff_preda.size(); ++i)
-    // {
-    //     std::cout << "coeff : " << coeff_preda[i] << std::endl;
-
-    // }
-
-    // std::cout << "Predation : " << Predation << std::endl;
-
-    // std::cout << "coeff.size : " << coeff_preda.size() << std::endl;
-    // std::cout << "pop_preda.size : " << pop_preda.size() << std::endl;
-
-    // std::cout << "Temps : " << temps_dynamique_population << std::endl;
-
-    // d'apres la formule du cours :
-    // ajouter le pas avec i dans les arguments de la fonction
-    // i compteur de boucle de jeu et non compteur lors du parcours du vecteur de prédécesseurs
-
-    // Avec Prédation
-    Proie.m_value = Proie.m_value + temps_dynamique_population*PAS*(REPRO*(1 - Proie.m_value/PORTAGE) - Predation);
-    // Sans prédation
-    // Proie.m_value = Proie.m_value + temps_dynamique_population*PAS*(REPRO*(1 - Proie.m_value/PORTAGE));
 }
 
 
 /// La m�thode update � appeler dans la boucle de jeu pour les graphes avec interface
 void Graph::update()
 {
-    int cmp = 0;
     if (!m_interface)
         return;
 
-
     // Dynamique des populations
-    for (auto &elt : m_vertices)
+    Dynamique_pop();
+    
+
+    /*for (auto &elt : m_vertices)
     {
         // Dynamique
         Dynamique_pop(elt.second);
@@ -597,7 +606,7 @@ void Graph::update()
         // std::cout << "Population du sommet " <<  cmp << " "<< elt.second.m_value << std::endl;
         // std::cout << "--------------------------------------" << std::endl;
 
-    }
+    }*/
 
     for (auto &elt : m_vertices)
         elt.second.pre_update();
