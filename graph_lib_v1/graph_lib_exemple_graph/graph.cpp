@@ -1,9 +1,37 @@
 #include "graph.h"
 #include <fstream>
 
+/*************************************************
+        CONSTANTES DYNAMIQUES DE POPULATIONS
+***************************************************/
+#ifndef REPRO
+#define REPRO 5
+#endif
+
+// Capacité de portage de l'environnement : facteur K dans le cdc
+#ifndef PORTAGE
+#define PORTAGE 50
+#endif
+
+#ifndef PAS
+#define PAS 0.001
+#endif
+
+// Efficacité des prédateurs
+#ifndef PREDATION
+#define PREDATION 0.5
+#endif
+
+// Variable globale de temps
+extern int temps_dynamique_population;
+
+
+
 /***************************************************
                     VERTEX
 ****************************************************/
+
+
 
 /// Le constructeur met en place les �l�ments de l'interface
 VertexInterface::VertexInterface(int idx, int x, int y, std::string pic_name, int pic_idx)
@@ -48,12 +76,11 @@ void Vertex::pre_update()
 {
     if (!m_interface)
         return;
-
     /// Copier la valeur locale de la donn�e m_value vers le slider associ�
     m_interface->m_slider_value.set_value(m_value);
 
     /// Copier la valeur locale de la donn�e m_value vers le label sous le slider
-    m_interface->m_label_value.set_message( std::to_string( (int)m_value) );
+    m_interface->m_label_value.set_message( std::to_string( (int)m_value));
 }
 
 
@@ -66,8 +93,6 @@ void Vertex::post_update()
     /// Reprendre la valeur du slider dans la donn�e m_value locale
     m_value = m_interface->m_slider_value.get_value();
 }
-
-
 
 
 /***************************************************
@@ -192,7 +217,7 @@ GraphInterface::GraphInterface(int x, int y, int w, int h)
 /// de chargement de fichiers par exemple.
 /// Bien s�r on ne veut pas que vos graphes soient construits
 /// "� la main" dans le code comme �a.
-void Graph::make_example()
+/*void Graph::make_example()
 {
     m_interface = std::make_shared<GraphInterface>(0, 0, 800, 600);
     // La ligne pr�c�dente est en gros �quivalente � :
@@ -250,11 +275,7 @@ void Graph::make_example()
     add_interfaced_edge(18, 10, 5, 0.0);
 
     add_interfaced_edge(19, 11, 10, 100.0);
-
-
-
-
-}
+}*/
 
 // Sous programme de construction des graphes
 void Graph::make_graphe(const std::string& vertex, const std::string& edge)
@@ -321,7 +342,7 @@ void Graph::remplissage_edge(const std::string& nom_fichier)
 
 // M�thode d'�criture des aretes dans le fichier de destination
 // la m�thode capture les valeurs des aretes lors de la fin de la boucle
-void Graph::ecriture_edge(const std::string& nom_fichier)
+void Graph::ecriture_edge(const std::string & nom_fichier)
 {
 
     // variables temp pour le remplissage de edges
@@ -335,13 +356,13 @@ void Graph::ecriture_edge(const std::string& nom_fichier)
     /// Construction du vecteur d'aretes
     if ( fic.is_open())
     {
-        fic << m_vertices.size() << std::endl;
-        for (auto it = m_vertices.begin(); it!=m_vertices.end(); ++it)
+        fic << m_edges.size() << std::endl;
+        for (auto it = m_edges.begin(); it!=m_edges.end(); ++it)
         {
             // r�cup�ration des valeurs du sommet n�cessaires � la construction de l'interface
             // et � la sauvegarde des positions lors de la fin du jeu
             // voir si probl�me h�ritage lors de la r�cup�ration des coordonn�es
-            fic << cmp << " " << it->second.m_value <<" "<< it->second.m_interface->m_top_box.get_posx() << " " << it->second.m_interface->m_top_box.get_posx() << " " << it->second.m_interface->m_img.get_pic_name() << std::endl;
+            fic << cmp << " " << it->second.m_from << " " << it->second.m_to << " " << it->second.m_weight << std::endl;
             cmp++;
         }
     }
@@ -365,6 +386,7 @@ void Graph::ecriture_vertex(const std::string& nom_fichier)
     if ( fic.is_open())
     {
         fic << m_vertices.size() << std::endl;
+        std::cout << m_vertices.size() << std::endl;
         for (auto it = m_vertices.begin(); it!=m_vertices.end(); ++it)
         {
             // r�cup�ration des valeurs du sommet n�cessaires � la construction de l'interface
@@ -379,17 +401,135 @@ void Graph::ecriture_vertex(const std::string& nom_fichier)
 
 
 
+/************************************************
+        Deuxième approche DYNAMIQUE : Graph
+
+    - la dynamique se fait au niveau du graph
+    - pour un accès direct aux valeurs des prédécesseurs
+    - du sommet à traiter
+**************************************************/
+// Les deux vecteurs sont symétriques et de meme taille
+// un ajout d'un prédateur entraine l'ajout de sa population à l'instant t
+// Pour que le modèle reste valide il faut que la dynamique soit
+// rafraichit tous les tours de boucles et doit être gérer par un pas
+// suivant l'évolution de la population
+
+void Graph::Recherchepreda(Vertex proie,std::vector<int> & coeff,std::vector<int> & pop)
+{
+    // Recherche des coefficient des prédateurs : poids des aretes des prédecesseurs
+    std::cout << "avant "<< m_vertices.size() << std::endl;
+    for (int i = 0; i < m_edges.size(); ++i)
+    {
+        for (int j = 0; j < proie.m_in.size(); ++j)
+                {
+                    if (m_edges[i].m_to == proie.m_in[j])
+                        {
+
+                            // Condition pour savoir si prédésseur
+
+                            // Ajout des coefficients de prédation des prédateurs
+                            coeff.push_back(m_edges[i].m_weight);
+                            // Ajout de la valeur du sommet prédésseurs
+                            pop.push_back(m_vertices[i].m_value);
+                            // std::cout << "m_vertices[i].m_value "<< m_vertices[i].m_value << std::endl;
+
+                        }
+                }
+    }
+    std::cout << "apres "<< m_vertices.size() << std::endl;
+
+
+    // Recherche des populations de prédateurs : valeur des prédécesseurs
+
+}
+
+void Graph::Dynamique_pop(Vertex & Proie)
+{
+    // Calcul du coeff de prédation
+    int Predation = 0;
+    std::vector<int> coeff_preda,pop_preda;
+
+    // Recherchepreda(Proie,coeff_preda,pop_preda);
+
+
+    for (int i = 0; i < coeff_preda.size(); ++i)
+    {
+        // recherche du coeff de prédation
+        // somme des differents coeff d'efficatité des prédateurs * nombre de prédateurs
+        // attention récuperer les tailles de populations des autres prédateurs
+        Predation += coeff_preda[i]*pop_preda[i]*PREDATION;
+    }
+    if (Predation > 100)
+    {
+        Predation = Predation/100;
+    }
+
+
+    // for (int i = 0; i < coeff_preda.size(); ++i)
+    // {
+    //     std::cout << "coeff : " << coeff_preda[i] << std::endl;
+
+    // }
+
+    // std::cout << "Predation : " << Predation << std::endl;
+
+    // std::cout << "coeff.size : " << coeff_preda.size() << std::endl;
+    // std::cout << "pop_preda.size : " << pop_preda.size() << std::endl;
+
+    // std::cout << "Temps : " << temps_dynamique_population << std::endl;
+
+    // d'apres la formule du cours :
+    // ajouter le pas avec i dans les arguments de la fonction
+    // i compteur de boucle de jeu et non compteur lors du parcours du vecteur de prédécesseurs
+
+    // Avec Prédation
+    Proie.m_value = Proie.m_value + temps_dynamique_population*PAS*(REPRO*(1 - Proie.m_value/PORTAGE) - Predation);
+    // Sans prédation
+    // Proie.m_value = Proie.m_value + temps_dynamique_population*PAS*(REPRO*(1 - Proie.m_value/PORTAGE));
+}
+
+
 /// La m�thode update � appeler dans la boucle de jeu pour les graphes avec interface
 void Graph::update()
 {
+    int cmp = 0;
     if (!m_interface)
         return;
+
+
+    // Dynamique des populations
+    for (auto &elt : m_vertices)
+    {
+        cmp ++;
+        // std::cout << "Indice sommet " <<  cmp << std::endl;
+
+        // Dynamique fait beuguer la sauvegarde
+        Dynamique_pop(elt.second);
+
+        // std::cout << "Population du sommet [] " << i << " : "<< m_vertices[i].m_value << std::endl;
+        // std::cout << "Population du sommet " <<  cmp << " "<< elt.second.m_value << std::endl;
+        // std::cout << "--------------------------------------" << std::endl;
+
+    }
 
     for (auto &elt : m_vertices)
         elt.second.pre_update();
 
+
+
     for (auto &elt : m_edges)
         elt.second.pre_update();
+
+
+
+    // for (int i = 0; i < m_vertices.size(); ++i)
+    // {
+
+    //     Dynamique_pop(m_vertices[i]);
+
+    // }
+
+
 
     m_interface->m_top_box.update();
 
@@ -401,25 +541,40 @@ void Graph::update()
 
     if ( m_interface->m_bouton1.clicked() )
     {
-        std::cout << "OK1" << std::endl;
+        std::cout << "Sauvegarde du graphe" << std::endl;
+        ecriture_edge("last_edges.txt");
+        ecriture_vertex("last_vertex.txt");
         //appeler la fonction sauvegarder
     }
 
     if ( m_interface->m_bouton2.clicked() )
     {
-        std::cout << "OK2" << std::endl;
+        std::cout << "Chargement" << std::endl;
         //appeler la fonction charger
+
+        // g.make_graphe("graphe_1_sommet.txt","graphe_1_arete.txt");
+        // g.ecriture_edge("graphe_1_sommet_test.txt");
+        // g.ecriture_vertex("graphe_1_arete_test.txt");
+
+        // h.make_graphe("graphe_1_sommet.txt","graphe_1_arete.txt");
+        // h.ecriture_edge("graphe_1_sommet_test.txt");
+        // h.ecriture_vertex("graphe_1_arete_test.txt");
+
+        // b.make_graphe("graphe_3_sommet.txt","graphe_3_arete.txt");
+        // b.ecriture_edge("graphe_3_sommet_test.txt");
+        // b.ecriture_vertex("graphe_3_arete_test.txt");
+
     }
 
     if ( m_interface->m_bouton3.clicked() )
     {
-        std::cout << "OK3" << std::endl;
+        std::cout << "Ajout d'un sommet" << std::endl;
         //appeler la fonction ajouter
     }
 
     if ( m_interface->m_bouton4.clicked() )
     {
-        std::cout << "OK4" << std::endl;
+        std::cout << "Suppression d'un sommet" << std::endl;
         //appeler la fonction supprimer
     }
 
@@ -469,53 +624,79 @@ void Graph::add_interfaced_edge(int idx, int id_vert1, int id_vert2, double weig
 }
 
 
-/*void Graph::cliquer()
+
+/*******************************************************
+                    CONNEXITE
+Algo de trajan
+Inspiré du wiki sur algo de trajan
+Traduction du pseudo code
+********************************************************/
+
+void Graph::connexite(const int vertex_index) ///Prends les numero de sommet en parametre
 {
-    if ( m_bouton1.clicked() )
-    {
-        std::cout << "OK1" << std::endl;
-        //appeler la fonction sauvegarder
-    }
+    auto& sommet( m_vertices [vertex_index]);
+    int m_tarjan_index = 0;
 
-    if ( m_bouton2.clicked() )
+    // Initialisation de l'algo
+    sommet.m_tarjan_index = m_tarjan_index;
+    sommet.m_tarjan_lowlink = m_tarjan_index;
+    m_tarjan_index += 1;
+    m_trajan_vect.push_back(vertex_index);
+    sommet.m_tarjan_on_stack = true;
+    for (const auto edge_idx : sommet.m_out)
     {
-        std::cout << "OK2" << std::endl;
-        //appeler la fonction charger
+        const auto& arete( m_edges[edge_idx]);
+        auto& w( m_vertices[arete.m_to]);
+        if( w.m_tarjan_index == -1 )
+        {
+            connexite( arete.m_to );
+            sommet.m_tarjan_lowlink = std::min(sommet.m_tarjan_lowlink, w.m_tarjan_lowlink);
+        }
+        else if( w.m_tarjan_on_stack )
+        {
+            sommet.m_tarjan_lowlink = std::min(sommet.m_tarjan_lowlink, w.m_tarjan_index);
+        }
     }
-
-    if ( m_bouton3.clicked() )
+    if( sommet.m_tarjan_lowlink == sommet.m_tarjan_index)
     {
-        std::cout << "OK3" << std::endl;
-        //appeler la fonction ajouter
-    }
+        std::vector<int> liste_fortement_connexe;
+        while ( true )
+        {
+            const auto w_idx( m_trajan_vect.back() );
+            auto& w( m_vertices[ w_idx ]);
+            m_trajan_vect.pop_back();
+            w.m_tarjan_on_stack = false;
+            liste_fortement_connexe.push_back(w_idx);
 
-    if ( m_bouton4.clicked() )
-    {
-        std::cout << "OK4" << std::endl;
-        //appeler la fonction supprimer
+            if ( w_idx == vertex_index )
+            {
+                break;
+            }
+        }
+        std::cout << "Les composantes fortement connexes sont: ";
+        for (std::size_t i = 0; i < liste_fortement_connexe.size(); ++i)
+        {
+            std::cout << liste_fortement_connexe[i]  << " ";
+        }
+        std::cout << std::endl;
     }
 }
 
-/// Une méthode update de la classe doit être appelée dans la boucle de jeu
-/// et cette méthode doit propager l'appel à update sur les widgets contenus...
-/// Cette méthode fait le lien entre l'interface, les événements, et les conséquences
-void Thing::update()
+void Graph::tarjan()
 {
-
-    /// Si tous les widgets dépendants de l'objet sont dans une top box
-    /// alors ce seul appel suffit (la propagation d'updates se fait ensuite automatiquement)
-    m_top_box.update();
-
-    /// Utilisation d'un bouton pour déclencher un événement
-    /// L'accès à clicked() fait un reset : tant que le bouton n'est pas
-    /// à nouveau cliqué les futurs accès à clicked seront faux
-    /// ( Donc il faut appeler clicked() UNE FOIS ET UNE SEULE par update )
-
-
+    int m_tarjan_index = 0;
+    m_trajan_vect.clear(); ///Pour que le tableau soit vide
+    for (auto &elt : m_vertices) ///Parcours des soemmets pour initialiser tout les sommets avec les valeurs de l'algo
+    {
+        auto& sommet( elt.second );
+        sommet.tarjan_init();
+    }
+    for (auto &elt : m_vertices)
+    {
+        auto& sommet( elt.second );
+        if ( sommet.m_tarjan_index == -1) ///Toujours vrai, on test alors la forte connexite
+        {
+            connexite(elt.first);
+        }
+    }
 }
-
-
-/// On a des allocations dynamiques dans m_dynaclowns => à nettoyer dans le destructeur
-Thing::~Thing()
-{}
-*/

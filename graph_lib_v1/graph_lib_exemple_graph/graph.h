@@ -150,6 +150,14 @@ class Vertex
         // VertexInterface * m_interface = nullptr;
 
 
+        ///Declaration des variables pour l'algorithme de Tarjan
+        int m_tarjan_index; 
+        int m_tarjan_lowlink;
+        bool m_tarjan_on_stack;
+
+
+
+
     public:
 
         /// Les constructeurs sont à compléter selon vos besoin...
@@ -162,6 +170,9 @@ class Vertex
         /// Voir l'implémentation Graph::update dans le .cpp
         void pre_update();
         void post_update();
+
+        // trajan
+        void tarjan_init(){m_tarjan_index = -1, m_tarjan_lowlink = -1, m_tarjan_on_stack = false; } ///Pour initialiser l'algo de Tarjan
 
 };
 
@@ -307,7 +318,12 @@ class Graph
         /// le POINTEUR sur l'interface associée, nullptr -> pas d'interface
         std::shared_ptr<GraphInterface> m_interface = nullptr;
 
+        // variables pour algo de trajan
+        int m_trajan_index;
+        std::vector<int>m_trajan_vect;
+
     public:
+
 
         /// Les constructeurs sont à compléter selon vos besoin...
         /// Ici on ne donne qu'un seul constructeur qui peut utiliser une interface
@@ -320,7 +336,7 @@ class Graph
         /// Méthode spéciale qui construit du graphe
         /// Voir implémentation dans le .cpp
         /// Cette méthode fait appel aux deux méthodes de construction avec le nom des fichiers nécessaires
-        void make_example();
+        // void make_example();
 
         void make_graphe(const std::string& vertex, const std::string& edge);
 
@@ -329,12 +345,25 @@ class Graph
         void remplissage_edge(const std::string& nom_fichier);
 
         //Méthode de remplissage du fichier edge.txt
-        void ecriture_vertex(const std::string& nom_fichier);
         void ecriture_edge(const std::string& nom_fichier);
+        void ecriture_vertex(const std::string& nom_fichier);
 
 
         /// La méthode update à appeler dans la boucle de jeu pour les graphes avec interface
         void update();
+
+        // fonctions alog de trajan
+        void connexite(const int vertex_index);
+        void tarjan();
+
+
+
+        /// dynamiques des population
+        void Recherchepreda(Vertex proie,std::vector<int> & coeff,std::vector<int> & pop);
+        void Dynamique_pop(Vertex & Proie); 
+
+
+
 };
 /*
 class Thing {

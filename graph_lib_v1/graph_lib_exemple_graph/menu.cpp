@@ -1,5 +1,7 @@
 #include "menu.h"
 
+// variable globale de temps pour lier l'évolution de la population au temps
+int temps_dynamique_population;
 
 void menu(Graph G, Graph H, Graph B)
 {
@@ -68,6 +70,8 @@ void menu(Graph G, Graph H, Graph B)
 
         else if(page_actuelle == 2)
         {
+            // reset du temps lors du retour au menu
+            temps_dynamique_population = 0;
             blit(fond, buffer,0, 0, 0, 0, SCREEN_W, SCREEN_H);
             draw_sprite(buffer, menu_page2[etat],0,0);
             if((key[KEY_DOWN]))
@@ -95,7 +99,7 @@ void menu(Graph G, Graph H, Graph B)
 
                 while(!key[KEY_F])
                 {
-
+                    temps_dynamique_population ++;
                     G.update();
 
                     grman::mettre_a_jour();
@@ -111,7 +115,7 @@ void menu(Graph G, Graph H, Graph B)
 
                 while(!key[KEY_F])
                 {
-
+                    temps_dynamique_population ++;
                     H.update();
                     grman::mettre_a_jour();
 
@@ -125,6 +129,7 @@ void menu(Graph G, Graph H, Graph B)
                 while(!key[KEY_F])
                 {
 
+                    temps_dynamique_population ++;
                     B.update();
                     grman::mettre_a_jour();
 

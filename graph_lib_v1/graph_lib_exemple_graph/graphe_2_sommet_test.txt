@@ -1,0 +1,16 @@
+15
+0 30 398 398 user.jpg
+1 60 98 98 info.jpg
+2 50 398 398 data.jpg
+3 0 798 798 metadata.jpg
+4 100 98 98 television.jpg
+5 0 398 398 smartphone.jpg
+6 0 798 798 frigo.jpg
+7 0 98 98 RS.jpg
+8 10 348 348 tracker.jpg
+9 30 648 648 position.jpg
+10 60 798 798 cookie.jpg
+11 50 98 98 cambridge.jpg
+12 0 348 348 ecole.jpg
+13 5 648 648 bank.jpg
+14 10 798 798 gov.jpg

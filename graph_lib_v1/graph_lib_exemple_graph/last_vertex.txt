@@ -1,0 +1,16 @@
+15
+0 50 443 443 user.jpg
+1 50 98 98 info.jpg
+2 50 398 398 data.jpg
+3 50 798 798 metadata.jpg
+4 50 240 240 television.jpg
+5 50 598 598 smartphone.jpg
+6 50 855 855 frigo.jpg
+7 50 65 65 RS.jpg
+8 50 425 425 tracker.jpg
+9 50 620 620 position.jpg
+10 50 833 833 cookie.jpg
+11 50 98 98 cambridge.jpg
+12 50 348 348 ecole.jpg
+13 50 648 648 bank.jpg
+14 50 798 798 gov.jpg
