@@ -1,14 +1,21 @@
-13
-0 30 398 398 carriere.jpg
-1 60 198 198 carbonate.jpg
-2 50 298 298 sable.jpg
-3 0 498 498 calcaire.jpg
-4 100 698 698 granulat.jpg
-5 0 98 98 calcin.jpg
-6 0 298 298 verre.jpg
-7 0 498 498 ciment.jpg
-8 10 698 698 goudron.jpg
-9 30 98 98 erosion.jpg
-10 60 248 248 recyclage.jpg
-11 50 498 498 batiment.jpg
-12 0 698 698 route.jpg
+20
+0 0 1 50
+1 0 2 50
+2 0 3 50
+3 0 4 75
+4 1 6 25
+5 2 6 25
+6 2 7 25
+7 3 6 0
+8 3 7 100
+9 4 8 20
+10 5 6 80
+11 6 10 50
+12 6 11 50
+13 7 11 50
+14 8 12 75
+15 9 0 25
+16 9 11 25
+17 10 4 25
+18 10 5 0
+19 11 10 100

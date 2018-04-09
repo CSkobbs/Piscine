@@ -100,7 +100,6 @@ void menu(Graph G, Graph H, Graph B)
                 while(!key[KEY_F])
                 {
                     temps_dynamique_population ++;
-                    std::cout << "temps_dynamique_population : " << temps_dynamique_population << std::endl;
                     G.update();
 
                     grman::mettre_a_jour();

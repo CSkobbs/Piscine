@@ -5,12 +5,12 @@
         CONSTANTES DYNAMIQUES DE POPULATIONS
 ***************************************************/
 #ifndef REPRO
-#define REPRO 10
+#define REPRO 5
 #endif
 
 // Capacité de portage de l'environnement : facteur K dans le cdc
 #ifndef PORTAGE
-#define PORTAGE 100
+#define PORTAGE 50
 #endif
 
 #ifndef PAS
@@ -76,7 +76,6 @@ void Vertex::pre_update()
 {
     if (!m_interface)
         return;
-    std::cout << "value pre_update : " << m_value << std::endl;
     /// Copier la valeur locale de la donn�e m_value vers le slider associ�
     m_interface->m_slider_value.set_value(m_value);
 
@@ -91,7 +90,6 @@ void Vertex::post_update()
     if (!m_interface)
         return;
 
-    std::cout << "value post_update : " << m_value << std::endl;
     /// Reprendre la valeur du slider dans la donn�e m_value locale
     m_value = m_interface->m_slider_value.get_value();
 }
@@ -219,7 +217,7 @@ GraphInterface::GraphInterface(int x, int y, int w, int h)
 /// de chargement de fichiers par exemple.
 /// Bien s�r on ne veut pas que vos graphes soient construits
 /// "� la main" dans le code comme �a.
-void Graph::make_example()
+/*void Graph::make_example()
 {
     m_interface = std::make_shared<GraphInterface>(0, 0, 800, 600);
     // La ligne pr�c�dente est en gros �quivalente � :
@@ -277,11 +275,7 @@ void Graph::make_example()
     add_interfaced_edge(18, 10, 5, 0.0);
 
     add_interfaced_edge(19, 11, 10, 100.0);
-
-
-
-
-}
+}*/
 
 // Sous programme de construction des graphes
 void Graph::make_graphe(const std::string& vertex, const std::string& edge)
@@ -308,6 +302,7 @@ void Graph::remplissage_vertex(const std::string& nom_fichier)
     if ( fic.good())
     {
         fic >> ordre;
+        std::cout << "ordre : " << ordre << std::endl;
         for (int i = 0; i < ordre; ++i)
         {
             // Initialisation des variables locales � chaque tour de boucle pour �viter de construire le mauvais sommet
@@ -316,6 +311,7 @@ void Graph::remplissage_vertex(const std::string& nom_fichier)
             add_interfaced_vertex(indice,valeur,posx,posy,nom_image);
         }
     }
+    std::cout << "crea fichier : " << m_vertices.size() << std::endl;
 
 }
 
@@ -348,7 +344,7 @@ void Graph::remplissage_edge(const std::string& nom_fichier)
 
 // M�thode d'�criture des aretes dans le fichier de destination
 // la m�thode capture les valeurs des aretes lors de la fin de la boucle
-void Graph::ecriture_edge(const std::string& nom_fichier)
+void Graph::ecriture_edge(const std::string & nom_fichier)
 {
 
     // variables temp pour le remplissage de edges
@@ -362,13 +358,13 @@ void Graph::ecriture_edge(const std::string& nom_fichier)
     /// Construction du vecteur d'aretes
     if ( fic.is_open())
     {
-        fic << m_vertices.size() << std::endl;
-        for (auto it = m_vertices.begin(); it!=m_vertices.end(); ++it)
+        fic << m_edges.size() << std::endl;
+        for (auto it = m_edges.begin(); it!=m_edges.end(); ++it)
         {
             // r�cup�ration des valeurs du sommet n�cessaires � la construction de l'interface
             // et � la sauvegarde des positions lors de la fin du jeu
             // voir si probl�me h�ritage lors de la r�cup�ration des coordonn�es
-            fic << cmp << " " << it->second.m_value <<" "<< it->second.m_interface->m_top_box.get_posx() << " " << it->second.m_interface->m_top_box.get_posx() << " " << it->second.m_interface->m_img.get_pic_name() << std::endl;
+            fic << cmp << " " << it->second.m_from << " " << it->second.m_to << " " << it->second.m_weight << std::endl;
             cmp++;
         }
     }
@@ -392,6 +388,7 @@ void Graph::ecriture_vertex(const std::string& nom_fichier)
     if ( fic.is_open())
     {
         fic << m_vertices.size() << std::endl;
+        std::cout << m_vertices.size() << std::endl;
         for (auto it = m_vertices.begin(); it!=m_vertices.end(); ++it)
         {
             // r�cup�ration des valeurs du sommet n�cessaires � la construction de l'interface
@@ -450,7 +447,7 @@ void Graph::Dynamique_pop(Vertex & Proie)
     int Predation = 0;
     std::vector<int> coeff_preda,pop_preda;
 
-    Recherchepreda(Proie,coeff_preda,pop_preda);
+    // Recherchepreda(Proie,coeff_preda,pop_preda);
 
 
     for (int i = 0; i < coeff_preda.size(); ++i)
@@ -466,11 +463,11 @@ void Graph::Dynamique_pop(Vertex & Proie)
     }
 
 
-    for (int i = 0; i < coeff_preda.size(); ++i)
-    {
-        std::cout << "coeff : " << coeff_preda[i] << std::endl;
+    // for (int i = 0; i < coeff_preda.size(); ++i)
+    // {
+    //     std::cout << "coeff : " << coeff_preda[i] << std::endl;
 
-    }
+    // }
 
     // std::cout << "Predation : " << Predation << std::endl;
 
@@ -502,11 +499,14 @@ void Graph::update()
     for (auto &elt : m_vertices)
     {
         cmp ++;
-        std::cout << "Indice sommet " <<  cmp << std::endl;
+        // std::cout << "Indice sommet " <<  cmp << std::endl;
+
+        // Dynamique fait beuguer la sauvegarde
         Dynamique_pop(elt.second);
+
         // std::cout << "Population du sommet [] " << i << " : "<< m_vertices[i].m_value << std::endl;
-        std::cout << "Population du sommet " <<  cmp << " "<< elt.second.m_value << std::endl;
-        std::cout << "--------------------------------------" << std::endl;
+        // std::cout << "Population du sommet " <<  cmp << " "<< elt.second.m_value << std::endl;
+        // std::cout << "--------------------------------------" << std::endl;
 
     }
 
@@ -539,25 +539,40 @@ void Graph::update()
 
     if ( m_interface->m_bouton1.clicked() )
     {
-        std::cout << "OK1" << std::endl;
+        std::cout << "Sauvegarde du graphe" << std::endl;
+        ecriture_edge("last_edges.txt");
+        ecriture_vertex("last_vertex.txt");
         //appeler la fonction sauvegarder
     }
 
     if ( m_interface->m_bouton2.clicked() )
     {
-        std::cout << "OK2" << std::endl;
+        std::cout << "Chargement" << std::endl;
         //appeler la fonction charger
+
+        // g.make_graphe("graphe_1_sommet.txt","graphe_1_arete.txt");
+        // g.ecriture_edge("graphe_1_sommet_test.txt");
+        // g.ecriture_vertex("graphe_1_arete_test.txt");
+
+        // h.make_graphe("graphe_1_sommet.txt","graphe_1_arete.txt");
+        // h.ecriture_edge("graphe_1_sommet_test.txt");
+        // h.ecriture_vertex("graphe_1_arete_test.txt");
+
+        // b.make_graphe("graphe_3_sommet.txt","graphe_3_arete.txt");
+        // b.ecriture_edge("graphe_3_sommet_test.txt");
+        // b.ecriture_vertex("graphe_3_arete_test.txt");
+
     }
 
     if ( m_interface->m_bouton3.clicked() )
     {
-        std::cout << "OK3" << std::endl;
+        std::cout << "Ajout d'un sommet" << std::endl;
         //appeler la fonction ajouter
     }
 
     if ( m_interface->m_bouton4.clicked() )
     {
-        std::cout << "OK4" << std::endl;
+        std::cout << "Suppression d'un sommet" << std::endl;
         //appeler la fonction supprimer
     }
 

@@ -319,7 +319,7 @@ class Graph
         /// Méthode spéciale qui construit du graphe
         /// Voir implémentation dans le .cpp
         /// Cette méthode fait appel aux deux méthodes de construction avec le nom des fichiers nécessaires
-        void make_example();
+        // void make_example();
 
         void make_graphe(const std::string& vertex, const std::string& edge);
 
@@ -328,8 +328,8 @@ class Graph
         void remplissage_edge(const std::string& nom_fichier);
 
         //Méthode de remplissage du fichier edge.txt
-        void ecriture_vertex(const std::string& nom_fichier);
         void ecriture_edge(const std::string& nom_fichier);
+        void ecriture_vertex(const std::string& nom_fichier);
 
 
         /// La méthode update à appeler dans la boucle de jeu pour les graphes avec interface
