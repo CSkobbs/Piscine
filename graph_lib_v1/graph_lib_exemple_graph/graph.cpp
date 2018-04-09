@@ -399,7 +399,98 @@ void Graph::ecriture_vertex(const std::string& nom_fichier)
     fic.close();
 }
 
+/************************************************
+                Ajout et suppression
+*************************************************/
+void Graph::add_vertex()
+{
+    // Condition pour vérifier si sommet déjà supprimé
+    if ( !m_del_vertices.empty() )
+        {
+            const auto indice_sommet( m_del_vertices.back() );
+            auto& sommet( m_vertices[indice_sommet] );
 
+            m_del_vertices.pop_back();
+
+            sommet.add_to(m_interface->m_main_box);
+            std::cout << "Sommet ajouté " << std::endl;
+
+            for (const auto indice_arete : sommet.m_in)
+            {
+
+                m_edges[indice_arete].add_to( m_interface->m_main_box ); ///On rerajoute les aretes entrantes
+
+                std::cout << "Arete entrante ajoutée " << std::endl;
+            }
+            for (const auto indice_arete : sommet.m_out) ///On rerajoute les aretes sortantes
+            {
+                m_edges[indice_arete].add_to( m_interface->m_main_box );
+
+                std::cout << "Arete sortante ajoutée " << std::endl;
+            }
+        }
+        // m_add_mode = false; ///Pour finir, add mode est remis a false pour ne pas rajouter tous les sommets d'un coup
+}
+
+void Graph::del_vertex(int indice_sommet)
+{
+    auto & sommet(m_vertices[indice_sommet]);
+    for (const auto indice_arete : sommet.m_in) ///Pour effacer les aretes qui arrivent vers le sommet
+    {
+
+        m_edges[indice_arete].remove_from( m_interface->m_main_box ); ///On enleve ces aretes de l'interface graphique
+        std::cout << "Erased" << std::endl;
+        m_edges[indice_arete].m_interface->m_top_edge.reset_arrow_with_bullet();
+    }
+    for (const auto indice_arete : sommet.m_out) ///Pour effacer les aretes qui partent de ce sommet
+    {
+
+        m_edges[indice_arete].remove_from( m_interface->m_main_box );
+        std::cout << "Erased" << std::endl;
+        m_edges[indice_arete].m_interface->m_top_edge.reset_arrow_with_bullet();
+    }
+
+    m_vertices[indice_sommet].remove_from(m_interface->m_main_box); ///Enfin, on enleve le sommet de l'interface graphique
+    m_del_vertices.push_back( indice_sommet ); ///Cette ligne ajoute l'index du sommet a un vector de sommets supprimes, qui seront utiles pour le mode ajout
+    // m_vertices[indice_sommet].m_interface->m_img.remove_from(m_interface->m_main_box);
+
+
+}
+/*void Graph::del_vertex()
+{
+    for (auto &elt : m_vertices) ///Parcours des sommets
+        {
+            auto& sommet( elt.second ); ///C'est le sommet ( elt.second c'est le sommet )
+
+            if ( sommet.is_over_sommet() ) ///Si la souris clique un sommet
+            {
+                const auto indice_sommet( elt.first ); ///c'est l'indice du sommet ( le elt.first c'est la cle de la map )
+
+                for (const auto indice_arete : sommet.m_in) ///Pour effacer les aretes qui arrivent vers le sommet
+                {
+
+                    m_edges[indice_arete].remove_from( m_interface->m_main_box ); ///On enleve ces aretes de l'interface graphique
+                    std::cout << "Erased" << std::endl;
+                    m_edges[indice_arete].m_interface->m_top_edge.reset_arrow_with_bullet();
+                }
+                for (const auto indice_arete : sommet.m_out) ///Pour effacer les aretes qui partent de ce sommet
+                {
+
+                    m_edges[indice_arete].remove_from( m_interface->m_main_box );
+                    std::cout << "Erased" << std::endl;
+                    m_edges[indice_arete].m_interface->m_top_edge.reset_arrow_with_bullet();
+
+                }
+
+                m_vertices[indice_sommet].remove_from(m_interface->m_main_box); ///Enfin, on enleve le sommet de l'interface graphique
+                m_del_vertices.push_back( indice_sommet ); ///Cette ligne ajoute l'index du sommet a un vector de sommets supprimes, qui seront utiles pour le mode ajout
+                m_vertices[indice_sommet].m_interface->m_img.remove_from(m_interface->m_main_box);
+
+
+                break;
+            }
+        }
+}*/
 
 /************************************************
         Deuxième approche DYNAMIQUE : Graph
@@ -440,7 +531,6 @@ void Graph::Recherchepreda(Vertex proie,std::vector<int> & coeff,std::vector<int
 
 
     // Recherche des populations de prédateurs : valeur des prédécesseurs
-
 }
 
 void Graph::Dynamique_pop(Vertex & Proie)
@@ -500,10 +590,7 @@ void Graph::update()
     // Dynamique des populations
     for (auto &elt : m_vertices)
     {
-        cmp ++;
-        // std::cout << "Indice sommet " <<  cmp << std::endl;
-
-        // Dynamique fait beuguer la sauvegarde
+        // Dynamique
         Dynamique_pop(elt.second);
 
         // std::cout << "Population du sommet [] " << i << " : "<< m_vertices[i].m_value << std::endl;
@@ -519,16 +606,6 @@ void Graph::update()
 
     for (auto &elt : m_edges)
         elt.second.pre_update();
-
-
-
-    // for (int i = 0; i < m_vertices.size(); ++i)
-    // {
-
-    //     Dynamique_pop(m_vertices[i]);
-
-    // }
-
 
 
     m_interface->m_top_box.update();
@@ -568,14 +645,19 @@ void Graph::update()
 
     if ( m_interface->m_bouton3.clicked() )
     {
-        std::cout << "Ajout d'un sommet" << std::endl;
         //appeler la fonction ajouter
+        std::cout << "Ajout d'un sommet" << std::endl;
+        add_vertex();
     }
 
     if ( m_interface->m_bouton4.clicked() )
     {
-        std::cout << "Suppression d'un sommet" << std::endl;
         //appeler la fonction supprimer
+        std::cout << "*******************************" << std::endl;
+        std::cout << "Entrer le sommet à supprimer :" << std::endl;
+        int supp = 0;
+        std::cin >> supp;
+        del_vertex(supp);
     }
 
 }

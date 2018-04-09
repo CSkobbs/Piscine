@@ -171,6 +171,12 @@ class Vertex
         void pre_update();
         void post_update();
 
+        // Addition et suppression de vecteur
+        bool is_over_sommet() { return m_interface->m_top_box.is_mouse_over(); } ///Pour savoir si la souris est sur un sommet
+        void remove_from(grman::Widget& x) { x.remove_child(m_interface->m_top_box); } ///Pour enlever un sommet de l'interface graphique
+        void add_to(grman::Widget& x) { x.add_child(m_interface->m_top_box); } ///Pour rajouter un sommet a l'interface graphique
+
+
         // trajan
         void tarjan_init(){m_tarjan_index = -1, m_tarjan_lowlink = -1, m_tarjan_on_stack = false; } ///Pour initialiser l'algo de Tarjan
 
@@ -249,6 +255,10 @@ class Edge
         /// Voir l'implémentation Graph::update dans le .cpp
         void pre_update();
         void post_update();
+
+        void remove_from(grman::Widget& x) { x.remove_child(m_interface->m_top_edge); } ///Fonction pour enlever les aretes de l'interface
+        void add_to(grman::Widget& x) { x.add_child(m_interface->m_top_edge); } ///Fonction pour rajouter les aretes a l'interface graphique
+
 };
 
 
@@ -318,6 +328,11 @@ class Graph
         /// le POINTEUR sur l'interface associée, nullptr -> pas d'interface
         std::shared_ptr<GraphInterface> m_interface = nullptr;
 
+        ///Variables pour ajout et suppression
+        int m_nb_aretes;
+        int m_nbr_img;
+        std::vector<int> m_del_vertices;
+
         // variables pour algo de trajan
         int m_tarjan_index;
 
@@ -349,15 +364,22 @@ class Graph
         void ecriture_edge(const std::string& nom_fichier);
         void ecriture_vertex(const std::string& nom_fichier);
 
+        void set_nbr_arcs (int nbr_arcs) {m_nb_aretes=nbr_arcs;}
+        int get_nbr_arcs(){return m_nb_aretes;}
+        void set_nbr_img (int nbr_img) {m_nbr_img=nbr_img;}
+        int get_nbr_img(){return m_nbr_img;}
+
+        // Ajout et suppression
+        void add_vertex();
+        void del_vertex(int i);
+
 
         /// La méthode update à appeler dans la boucle de jeu pour les graphes avec interface
         void update();
 
-        // fonctions alog de trajan
+        // fonctions alog de tarjan
         void parcours(const int vertex_index);
         void tarjan();
-
-
 
         /// dynamiques des population
         void Recherchepreda(Vertex proie,std::vector<int> & coeff,std::vector<int> & pop);
